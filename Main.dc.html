@@ -63,7 +63,6 @@ input,select{font-family:inherit}
     <option value="ur">اردو · Urdu</option>
   </select>
   <div style="background: #E3F2EE; color: #0A5246; border-radius: 14px; padding: 12px 14px; font-size: 15px; font-weight: 700">{{showLine}}</div>
-  <button onClick="{{afterLang}}" style="min-height: 64px; border: none; border-radius: 18px; background: {{accent}}; color: #15211C; font-size: 20px; font-weight: 800; padding: 6px 12px">{{t.cont}}</button>
 </div>
 </sc-if>
 
@@ -535,6 +534,12 @@ input,select{font-family:inherit}
 </sc-if>
 
 </div>
+
+<sc-if value="{{isLang}}" hint-placeholder-val="{{ true }}">
+<div style="flex-shrink: 0; background: #FFFFFF; border-top: 1px solid #DADDD3; padding: 12px 18px 16px">
+  <button onClick="{{afterLang}}" style="width: 100%; min-height: 60px; border: none; border-radius: 18px; background: {{accent}}; color: #15211C; font-size: 20px; font-weight: 800; padding: 6px 12px">{{t.cont}}</button>
+</div>
+</sc-if>
 
 <sc-if value="{{showNav}}" hint-placeholder-val="{{ false }}">
 <nav style="min-height: 76px; flex-shrink: 0; background: #FFFFFF; border-top: 1px solid #DADDD3; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr))">
