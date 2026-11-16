@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Labour India</title>
+<meta name="description" content="Labour India demo: verified workers for any job, paid automatically.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#15211C">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Labour India">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<style>
+html, body { margin: 0; height: 100%; background: #15211C; }
+#stage { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; }
+#phone { width: 100%; height: 100%; background: #F3F4EF; overflow: hidden; position: relative; }
+#phone > div { width: 100% !important; height: 100% !important; }
+@media (min-width: 600px) {
+  #phone { width: 390px; height: min(844px, calc(100% - 40px)); border-radius: 36px; box-shadow: 0 0 0 10px #0B120F; }
+}
+#loading { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font: 700 18px system-ui, sans-serif; color: #56625B; }
+#notice { position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 10; max-width: 420px; margin: 0 auto; background: #15211C; color: #FFFFFF; border: 2px solid #F5B301; border-radius: 16px; padding: 12px 14px; display: flex; gap: 12px; align-items: center; font: 600 14px/1.35 system-ui, sans-serif; }
+#notice[hidden] { display: none; }
+#notice button { flex-shrink: 0; height: 44px; padding: 0 16px; border: none; border-radius: 12px; background: #F5B301; color: #15211C; font: 800 15px system-ui, sans-serif; cursor: pointer; }
+</style>
+</head>
+<body>
+<div id="stage"><div id="phone"><div id="loading">Loading Labour India…</div></div></div>
+<div id="notice" hidden>
+  <span>Demo version with sample data. Nothing you type is saved or sent. Please do not enter real Aadhaar or bank details.</span>
+  <button id="notice-ok" type="button">OK</button>
+</div>
+<script>
+// Small runtime that runs the two prototype screens (Main.dc.html = worker app,
+// Factory.dc.html = employer app) as a normal web page.
+(function () {
+  var FILES = { worker: 'Main.dc.html', employer: 'Factory.dc.html' };
+  var apps = {};
+  var current = null;
+  var seenHead = {};
+  var phone = document.getElementById('phone');
+
+  function DCLogic(props) { this.props = props || {}; this.state = {}; }
+  DCLogic.prototype.setState = function (p) {
+    var patch = typeof p === 'function' ? p(this.state) : p;
+    this.state = Object.assign({}, this.state, patch);
+    if (this._update) this._update();
+  };
+  DCLogic.prototype.forceUpdate = function () { if (this._update) this._update(); };
+
+  var HOLE = /\{\{\s*([^}]+?)\s*\}\}/g;
+  var WHOLE = /^\s*\{\{\s*([^}]+?)\s*\}\}\s*$/;
+
+  function lookup(path, scopes) {
+    if (path === 'true') return true;
+    if (path === 'false') return false;
+    if (path === 'null') return null;
+    if (/^-?\d+(\.\d+)?$/.test(path)) return +path;
+    var parts = path.split('.');
+    for (var i = scopes.length - 1; i >= 0; i--) {
+      var sc = scopes[i];
+      if (sc && Object.prototype.hasOwnProperty.call(sc, parts[0])) {
+        var v = sc[parts[0]];
+        for (var j = 1; j < parts.length && v != null; j++) v = v[parts[j]];
+        return v;
+      }
+    }
+    return undefined;
+  }
+  function whole(str, scopes) { var m = WHOLE.exec(str || ''); return m ? { v: lookup(m[1], scopes) } : null; }
+  function interp(str, scopes) {
+    return str.replace(HOLE, function (_, p) { var v = lookup(p, scopes); return v == null ? '' : String(v); });
+  }
+
+  function build(node, scopes, out) {
+    if (node.nodeType === 3) { out.appendChild(document.createTextNode(interp(node.nodeValue, scopes))); return; }
+    if (node.nodeType !== 1) return;
+    var tag = node.localName, i, w;
+    if (tag === 'helmet') return;
+    if (tag === 'sc-if') {
+      w = whole(node.getAttribute('value'), scopes);
+      if (w && w.v) for (i = 0; i < node.childNodes.length; i++) build(node.childNodes[i], scopes, out);
+      return;
+    }
+    if (tag === 'sc-for') {
+      w = whole(node.getAttribute('list'), scopes);
+      var as = node.getAttribute('as') || 'item';
+      var list = w && Array.isArray(w.v) ? w.v : [];
+      list.forEach(function (item, idx) {
+        var sc = {}; sc[as] = item; sc.$index = idx;
+        var s2 = scopes.concat([sc]);
+        for (var k = 0; k < node.childNodes.length; k++) build(node.childNodes[k], s2, out);
+      });
+      return;
+    }
+    var el = document.importNode(node, false);
+    var pendingValue;
+    Array.prototype.slice.call(node.attributes).forEach(function (a) {
+      var name = a.name, val = a.value;
+      if (name.indexOf('hint-') === 0) { el.removeAttribute(name); return; }
+      if (/^on[a-z]+$/.test(name)) {
+        el.removeAttribute(name);
+        var h = whole(val, scopes);
+        if (h && typeof h.v === 'function') el.addEventListener(name.slice(2), h.v);
+        return;
+      }
+      if (val.indexOf('{{') >= 0) {
+        var s = interp(val, scopes);
+        if (name === 'value') { pendingValue = s; el.removeAttribute('value'); }
+        else el.setAttribute(name, s);
+      }
+    });
+    for (i = 0; i < node.childNodes.length; i++) build(node.childNodes[i], scopes, el);
+    if (pendingValue !== undefined) el.value = pendingValue;
+    out.appendChild(el);
+  }
+
+  function mount(app) {
+    var vals = app.comp.renderVals();
+    var frag = document.createDocumentFragment();
+    for (var i = 0; i < app.tpl.childNodes.length; i++) build(app.tpl.childNodes[i], [vals], frag);
+
+    var active = document.activeElement;
+    var focusId = active && phone.contains(active) ? active.id : '';
+    if (app.mounted) {
+      Array.prototype.forEach.call(phone.querySelectorAll('input[id]'), function (inp) { app.inputs[inp.id] = inp.value; });
+    }
+    var oldScroller = phone.querySelector('[data-scroller]');
+    var top = oldScroller ? oldScroller.scrollTop : 0;
+    var sameScreen = app.mounted && app.lastScreen === app.comp.state.screen;
+
+    while (phone.firstChild) phone.removeChild(phone.firstChild);
+    phone.appendChild(frag);
+
+    Array.prototype.forEach.call(phone.querySelectorAll('input[id]'), function (inp) {
+      if (app.inputs[inp.id] != null) inp.value = app.inputs[inp.id];
+    });
+    var root = phone.firstElementChild;
+    var scroller = root && root.firstElementChild;
+    if (scroller) { scroller.setAttribute('data-scroller', ''); scroller.scrollTop = sameScreen ? top : 0; }
+    if (focusId && sameScreen) { var f = document.getElementById(focusId); if (f) f.focus(); }
+    app.lastScreen = app.comp.state.screen;
+    app.mounted = true;
+  }
+
+  function load(key) {
+    return fetch(FILES[key]).then(function (r) {
+      if (!r.ok) throw new Error('could not load ' + FILES[key]);
+      return r.text();
+    }).then(function (txt) {
+      var doc = new DOMParser().parseFromString(txt, 'text/html');
+      var tpl = doc.querySelector('x-dc');
+      var helmet = tpl.querySelector('helmet');
+      if (helmet) Array.prototype.forEach.call(helmet.children, function (n) {
+        var k = n.outerHTML;
+        if (!seenHead[k]) { seenHead[k] = true; document.head.appendChild(document.importNode(n, true)); }
+      });
+      var sEl = doc.querySelector('script[data-dc-script]');
+      var defs = JSON.parse(sEl.getAttribute('data-props') || '{}');
+      var props = {};
+      Object.keys(defs).forEach(function (k) {
+        if (k.charAt(0) !== '$' && defs[k] && Object.prototype.hasOwnProperty.call(defs[k], 'default')) props[k] = defs[k].default;
+      });
+      var Comp = new Function('DCLogic', sEl.textContent + '\n;return Component;')(DCLogic);
+      var comp = new Comp(props);
+      comp.props = props;
+      var app = { comp: comp, tpl: tpl, inputs: {}, lastScreen: null, mounted: false };
+      comp._update = function () { if (current === app) mount(app); };
+      return app;
+    });
+  }
+
+  function show(key) {
+    var ready = apps[key] ? Promise.resolve(apps[key]) : load(key).then(function (a) { apps[key] = a; return a; });
+    return ready.then(function (app) {
+      if (current && current !== app) current.mounted = false;
+      current = app;
+      mount(app);
+      try { history.replaceState(null, '', key === 'employer' ? '#employer' : '#worker'); } catch (e) {}
+    });
+  }
+
+  document.addEventListener('click', function (e) {
+    var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+    if (!a) return;
+    var h = a.getAttribute('href');
+    if (h === FILES.employer) { e.preventDefault(); show('employer'); }
+    else if (h === FILES.worker) { e.preventDefault(); show('worker'); }
+  });
+
+  var notice = document.getElementById('notice');
+  var seen = false;
+  try { seen = sessionStorage.getItem('li-notice') === '1'; } catch (e) {}
+  if (!seen) notice.hidden = false;
+  document.getElementById('notice-ok').addEventListener('click', function () {
+    notice.hidden = true;
+    try { sessionStorage.setItem('li-notice', '1'); } catch (e) {}
+  });
+
+  show(location.hash === '#employer' ? 'employer' : 'worker').catch(function (err) {
+    phone.textContent = 'Could not load the demo: ' + err.message;
+  });
+})();
+</script>
+</body>
+</html>

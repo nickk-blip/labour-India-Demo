@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: labour-india-demo
+    runtime: static
+    buildCommand: echo "No build step"
+    staticPublishPath: .

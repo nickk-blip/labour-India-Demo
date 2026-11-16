@@ -1,0 +1,733 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Worker app</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700;800&amp;family=Noto+Sans+Bengali:wght@500;700;800&amp;family=Noto+Sans+Tamil:wght@500;700;800&amp;family=Noto+Sans+Telugu:wght@500;700;800&amp;family=Noto+Sans+Gujarati:wght@500;700;800&amp;family=Noto+Sans+Kannada:wght@500;700;800&amp;family=Noto+Sans+Malayalam:wght@500;700;800&amp;family=Noto+Sans+Gurmukhi:wght@500;700;800&amp;family=Noto+Sans+Oriya:wght@500;700;800&amp;family=Noto+Sans+Arabic:wght@500;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#0E6B5C}a:hover{color:#0A5246}
+button{font-family:inherit;cursor:pointer}
+input,select{font-family:inherit}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; background: #F3F4EF; color: #15211C; font-family: 'Mukta', 'Noto Sans Bengali', 'Noto Sans Tamil', 'Noto Sans Telugu', 'Noto Sans Gujarati', 'Noto Sans Kannada', 'Noto Sans Malayalam', 'Noto Sans Gurmukhi', 'Noto Sans Oriya', 'Noto Sans Arabic', system-ui, sans-serif; overflow: hidden">
+
+<div style="flex: 1; overflow-y: auto; padding: 20px 18px 16px; display: flex; flex-direction: column; gap: 16px">
+
+<sc-if value="{{isOnboarding}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; gap: 6px">
+  <sc-for list="{{obSteps}}" as="o" hint-placeholder-count="5">
+    <div style="flex: 1; height: 6px; border-radius: 3px; background: {{o.bg}}"></div>
+  </sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{isLang}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; flex-direction: column; gap: 14px; padding-top: 12px">
+  <div style="display: flex; justify-content: flex-end; margin-top: -8px">
+    <a href="Factory.dc.html" style="height: 44px; padding: 0 12px; border-radius: 22px; border: 1px solid #B7BDB4; background: #FFFFFF; color: #15211C; display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 700; text-decoration: none">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h14l-4-4M20 16H6l4 4"></path></svg>
+      Employer login
+    </a>
+  </div>
+  <div style="display: flex; align-items: center; gap: 12px">
+    <div style="width: 56px; height: 56px; border-radius: 16px; background: {{accent}}; color: #15211C; display: flex; align-items: center; justify-content: center; flex-shrink: 0">
+      <svg width="34" height="34" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 34h40M8 34V20M40 34V20M8 22c8 10 24 10 32 0M18 34v-7M24 34v-6M30 34v-7"></path></svg>
+    </div>
+    <div><div style="font-size: 26px; font-weight: 800; line-height: 1.1">Labour India</div><div style="font-size: 15px; color: #56625B">{{l.tagline}}</div></div>
+  </div>
+  <div style="font-size: 26px; font-weight: 800; line-height: 1.25; margin-top: 16px">{{l.chooseLang}}</div>
+  <div style="font-size: 16px; color: #56625B; margin-top: -10px">{{e.chooseLang}}</div>
+  <sc-for list="{{mainLangs}}" as="m" hint-placeholder-count="2">
+    <button onClick="{{m.pick}}" style="height: 68px; border-radius: 18px; border: 3px solid {{m.border}}; background: #FFFFFF; color: #15211C; font-size: 22px; font-weight: 800; display: flex; align-items: center; justify-content: space-between; padding: 0 20px"><span>{{m.label}}</span><span style="font-size: 15px; font-weight: 700; color: #0E6B5C">{{m.mark}}</span></button>
+  </sc-for>
+  <label for="w-more" style="font-size: 16px; font-weight: 700; margin-top: 4px">{{t.moreLang}}</label>
+  <select id="w-more" onChange="{{pickMore}}" value="{{moreValue}}" style="height: 64px; border-radius: 18px; border: 3px solid {{moreBorder}}; background: #FFFFFF; color: #15211C; font-size: 19px; font-weight: 700; padding: 0 14px; margin-top: -6px">
+    <option value="">Select another language</option>
+    <option value="bn">বাংলা · Bengali</option>
+    <option value="mr">मराठी · Marathi</option>
+    <option value="ta">தமிழ் · Tamil</option>
+    <option value="te">తెలుగు · Telugu</option>
+    <option value="gu">ગુજરાતી · Gujarati</option>
+    <option value="kn">ಕನ್ನಡ · Kannada</option>
+    <option value="ml">മലയാളം · Malayalam</option>
+    <option value="pa">ਪੰਜਾਬੀ · Punjabi</option>
+    <option value="or">ଓଡ଼ିଆ · Odia</option>
+    <option value="as">অসমীয়া · Assamese</option>
+    <option value="ur">اردو · Urdu</option>
+  </select>
+  <div style="background: #E3F2EE; color: #0A5246; border-radius: 14px; padding: 12px 14px; font-size: 15px; font-weight: 700">{{showLine}}</div>
+  <button onClick="{{afterLang}}" style="min-height: 64px; border: none; border-radius: 18px; background: {{accent}}; color: #15211C; font-size: 20px; font-weight: 800; padding: 6px 12px">{{t.cont}}</button>
+</div>
+</sc-if>
+
+<sc-if value="{{isPhone}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 14px; padding-top: 12px">
+  <div style="font-size: 26px; font-weight: 800; line-height: 1.25">{{l.enterPhone}}</div>
+  <div style="font-size: 16px; color: #56625B; margin-top: -10px">{{e.enterPhone}}</div>
+  <label for="w-phone" style="font-size: 15px; font-weight: 700; margin-top: 8px">Mobile number</label>
+  <div style="display: flex; align-items: center; gap: 10px; background: #FFFFFF; border: 3px solid #15211C; border-radius: 18px; padding: 0 16px; height: 68px">
+    <span style="font-size: 24px; font-weight: 800">+91</span>
+    <input id="w-phone" type="tel" placeholder="98300 00000" style="flex: 1; min-width: 0; border: none; outline: none; font-size: 24px; font-weight: 800; color: #15211C; background: transparent">
+  </div>
+  <div style="font-size: 15px; color: #56625B">We will send an OTP. No email or password needed.</div>
+  <button onClick="{{goOtp}}" style="min-height: 64px; border: none; border-radius: 18px; background: {{accent}}; color: #15211C; font-size: 20px; font-weight: 800; margin-top: 8px; padding: 6px 12px">{{t.sendOtp}}</button>
+  <button onClick="{{goLang}}" style="min-height: 48px; border: none; background: transparent; color: #56625B; font-size: 16px; font-weight: 700">{{t.back}}</button>
+</div>
+</sc-if>
+
+<sc-if value="{{isOtp}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 14px; padding-top: 12px">
+  <div style="font-size: 26px; font-weight: 800; line-height: 1.25">{{l.enterOtp}}</div>
+  <div style="font-size: 16px; color: #56625B; margin-top: -10px">Enter the 4-digit code sent to your phone</div>
+  <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 8px">
+    <div style="height: 80px; border-radius: 18px; background: #FFFFFF; border: 3px solid #15211C; display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: 800">4</div>
+    <div style="height: 80px; border-radius: 18px; background: #FFFFFF; border: 3px solid #15211C; display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: 800">7</div>
+    <div style="height: 80px; border-radius: 18px; background: #FFFFFF; border: 3px solid #15211C; display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: 800">2</div>
+    <div style="height: 80px; border-radius: 18px; background: #FFFFFF; border: 3px solid #15211C; display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: 800">9</div>
+  </div>
+  <div style="display: flex; align-items: center; gap: 10px; background: #E3F2EE; color: #0A5246; border-radius: 14px; padding: 12px 14px; font-size: 15px; font-weight: 700">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg>
+    Filled automatically from SMS
+  </div>
+  <button onClick="{{goSkill}}" style="min-height: 64px; border: none; border-radius: 18px; background: {{accent}}; color: #15211C; font-size: 20px; font-weight: 800; margin-top: 8px; padding: 6px 12px">{{t.verify}}</button>
+  <button onClick="{{goPhone}}" style="height: 48px; border: none; background: transparent; color: #56625B; font-size: 16px; font-weight: 700">Change number</button>
+</div>
+</sc-if>
+
+<sc-if value="{{isSkill}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 14px; padding-top: 12px">
+  <div style="font-size: 26px; font-weight: 800; line-height: 1.25">{{l.whatWork}}</div>
+  <div style="font-size: 16px; color: #56625B; margin-top: -10px">Pick a type of work, then your skills. You can choose more than one.</div>
+  <div style="display: flex; flex-wrap: wrap; gap: 8px">
+    <sc-for list="{{segs}}" as="g" hint-placeholder-count="6">
+      <button onClick="{{g.pick}}" style="height: 44px; padding: 0 14px; border-radius: 22px; border: 2px solid #15211C; background: {{g.bg}}; color: {{g.fg}}; font-size: 15px; font-weight: 700">{{g.label}}</button>
+    </sc-for>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+    <sc-for list="{{skillTiles}}" as="sk" hint-placeholder-count="6">
+      <button onClick="{{sk.pick}}" style="height: 72px; border-radius: 18px; border: 3px solid {{sk.border}}; background: {{sk.bg}}; color: {{sk.fg}}; font-size: 17px; font-weight: 800; line-height: 1.2; padding: 4px 8px">{{sk.label}}</button>
+    </sc-for>
+  </div>
+  <div style="font-size: 15px; font-weight: 700; color: #0A5246">{{skillCount}} selected: {{skillLine}}</div>
+  <div style="font-size: 17px; font-weight: 700; margin-top: 4px">{{t.experience}}</div>
+  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px">
+    <sc-for list="{{expOpts}}" as="x" hint-placeholder-count="3">
+      <button onClick="{{x.pick}}" style="height: 52px; border-radius: 26px; border: 2px solid #15211C; background: {{x.bg}}; color: {{x.fg}}; font-size: 17px; font-weight: 700">{{x.label}}</button>
+    </sc-for>
+  </div>
+  <button onClick="{{goVerify}}" style="min-height: 64px; border: none; border-radius: 18px; background: {{accent}}; color: #15211C; font-size: 20px; font-weight: 800; margin-top: 8px; padding: 6px 12px">{{t.next}}</button>
+</div>
+</sc-if>
+
+<sc-if value="{{isVerify}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 14px; padding-top: 12px">
+  <div style="font-size: 26px; font-weight: 800; line-height: 1.25">{{l.idPay}}</div>
+  <div style="font-size: 16px; color: #56625B; margin-top: -10px">Identity and payment. This is the last step.</div>
+  <div style="background: #FFFFFF; border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 10px">
+    <div style="font-size: 18px; font-weight: 800">1. Aadhaar ID check</div>
+    <div style="font-size: 15px; color: #56625B">Employers only see verified workers. Your Aadhaar number is not shown to anyone.</div>
+    <sc-if value="{{kycPending}}" hint-placeholder-val="{{ true }}">
+      <button onClick="{{doKyc}}" style="height: 56px; border-radius: 16px; border: 2px solid #15211C; background: transparent; color: #15211C; font-size: 17px; font-weight: 800">Verify with Aadhaar OTP</button>
+    </sc-if>
+    <sc-if value="{{kycDone}}" hint-placeholder-val="{{ false }}">
+      <div style="display: flex; align-items: center; gap: 10px; background: #E3F2EE; color: #0A5246; border-radius: 14px; padding: 14px; font-size: 17px; font-weight: 800">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg>
+        ID verified
+      </div>
+    </sc-if>
+  </div>
+  <div style="background: #FFFFFF; border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 10px">
+    <div style="font-size: 18px; font-weight: 800">2. Where should we send your pay?</div>
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+      <sc-for list="{{payOpts}}" as="p" hint-placeholder-count="2">
+        <button onClick="{{p.pick}}" style="height: 50px; border-radius: 25px; border: 2px solid #15211C; background: {{p.bg}}; color: {{p.fg}}; font-size: 16px; font-weight: 800">{{p.label}}</button>
+      </sc-for>
+    </div>
+    <sc-if value="{{isUpi}}" hint-placeholder-val="{{ true }}">
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <label for="w-upi" style="font-size: 15px; font-weight: 700">UPI ID</label>
+        <input id="w-upi" type="text" placeholder="name@bank" style="height: 54px; border-radius: 14px; border: 2px solid #15211C; padding: 0 14px; font-size: 19px; font-weight: 700; color: #15211C; background: #FFFFFF; box-sizing: border-box; width: 100%">
+      </div>
+    </sc-if>
+    <sc-if value="{{isBank}}" hint-placeholder-val="{{ false }}">
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <label for="w-acname" style="font-size: 15px; font-weight: 700">Account holder name</label>
+        <input id="w-acname" type="text" placeholder="As written in your passbook" style="height: 54px; border-radius: 14px; border: 2px solid #15211C; padding: 0 14px; font-size: 17px; font-weight: 700; color: #15211C; background: #FFFFFF; box-sizing: border-box; width: 100%">
+        <label for="w-acno" style="font-size: 15px; font-weight: 700">Account number</label>
+        <input id="w-acno" type="text" inputmode="numeric" placeholder="Bank account number" style="height: 54px; border-radius: 14px; border: 2px solid #15211C; padding: 0 14px; font-size: 17px; font-weight: 700; color: #15211C; background: #FFFFFF; box-sizing: border-box; width: 100%">
+        <label for="w-ifsc" style="font-size: 15px; font-weight: 700">IFSC code</label>
+        <input id="w-ifsc" type="text" placeholder="11-character code on your passbook" style="height: 54px; border-radius: 14px; border: 2px solid #15211C; padding: 0 14px; font-size: 17px; font-weight: 700; color: #15211C; background: #FFFFFF; box-sizing: border-box; width: 100%">
+      </div>
+    </sc-if>
+    <div style="font-size: 15px; color: #56625B">Pay for each approved shift is sent here automatically.</div>
+  </div>
+  <button onClick="{{toggleAgree}}" style="display: flex; align-items: center; gap: 12px; border: none; background: #FFFFFF; border-radius: 16px; padding: 12px 14px; text-align: left; color: #15211C">
+    <span style="width: 28px; height: 28px; border-radius: 8px; border: 2px solid #15211C; background: {{agreeBg}}; color: #FFFFFF; display: flex; align-items: center; justify-content: center; flex-shrink: 0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></span>
+    <span style="font-size: 15px; font-weight: 700">I accept the Labour India worker terms. They can be read aloud in my language.</span>
+  </button>
+  <button onClick="{{finishOnboarding}}" style="min-height: 64px; border: none; border-radius: 18px; background: {{accent}}; color: #15211C; font-size: 20px; font-weight: 800; margin-top: 4px; padding: 6px 12px">{{t.startWork}}</button>
+</div>
+</sc-if>
+
+<sc-if value="{{isHome}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 14px">
+  <div style="display: flex; align-items: center; gap: 12px">
+    <div style="width: 52px; height: 52px; border-radius: 26px; background: #15211C; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700; flex-shrink: 0">R</div>
+    <div style="flex: 1; min-width: 0">
+      <div style="font-size: 23px; font-weight: 800; line-height: 1.15">{{l.hello}}, Raju</div>
+      <div style="font-size: 15px; color: #56625B">{{skillLine}} · ID verified</div>
+    </div>
+    <button onClick="{{goLang}}" aria-label="Change language" style="height: 44px; padding: 0 12px; border-radius: 22px; border: 2px solid #15211C; background: transparent; font-size: 15px; font-weight: 700; color: #15211C; flex-shrink: 0">{{langShort}}</button>
+  </div>
+
+  <button onClick="{{toggleAvail}}" style="display: flex; align-items: center; gap: 12px; border: none; background: #FFFFFF; border-radius: 18px; padding: 12px 14px; text-align: left; color: #15211C">
+    <span style="width: 56px; height: 32px; border-radius: 16px; background: {{availBg}}; display: flex; align-items: center; padding: 3px; box-sizing: border-box; justify-content: {{availAlign}}; flex-shrink: 0"><span style="width: 26px; height: 26px; border-radius: 13px; background: #FFFFFF"></span></span>
+    <span style="flex: 1"><span style="display: block; font-size: 17px; font-weight: 800; line-height: 1.25">{{availTitle}}</span><span style="display: block; font-size: 14px; color: #56625B">{{availSub}}</span></span>
+  </button>
+
+  <sc-if value="{{homeNone}}" hint-placeholder-val="{{ true }}">
+  <div style="display: flex; flex-direction: column; gap: 14px">
+    <div style="background: #0E6B5C; color: #FFFFFF; border-radius: 22px; padding: 16px 20px">
+      <div style="font-size: 16px; font-weight: 600">{{t.thisMonth}}</div>
+      <div style="font-size: 40px; font-weight: 800; line-height: 1.15">₹{{monthText}}</div>
+      <div style="font-size: 15px">{{daysWorked}} days worked · every shift paid the same day</div>
+    </div>
+    <sc-if value="{{hasOffers}}" hint-placeholder-val="{{ true }}">
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px">
+        <div style="font-size: 18px; font-weight: 700; line-height: 1.25">{{t.newJob}}</div>
+        <button onClick="{{goJobs}}" style="border: none; background: transparent; color: #0E6B5C; font-size: 16px; font-weight: 800; min-height: 44px; padding: 0 4px; flex-shrink: 0">See all ({{offerCount}})</button>
+      </div>
+      <div style="background: #FFFFFF; border-radius: 22px; padding: 16px; display: flex; flex-direction: column; gap: 12px; border: 2px solid {{accent}}">
+        <div><div style="font-size: 20px; font-weight: 800; line-height: 1.15">{{top.title}}</div><div style="font-size: 15px; color: #56625B">{{top.factory}}</div></div>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px">
+          <span style="font-size: 15px; font-weight: 700; background: #FFF4CC; padding: 6px 12px; border-radius: 12px">₹{{top.rateText}} {{l.perDay}}</span>
+          <span style="font-size: 15px; font-weight: 600; background: #F3F4EF; padding: 6px 12px; border-radius: 12px">{{top.days}} {{l.days}}</span>
+          <span style="font-size: 15px; font-weight: 600; background: #F3F4EF; padding: 6px 12px; border-radius: 12px">{{top.dist}}</span>
+        </div>
+        <button onClick="{{top.open}}" style="min-height: 56px; border: none; border-radius: 16px; background: {{accent}}; color: #15211C; font-size: 19px; font-weight: 800; padding: 6px 12px">{{t.viewJob}}</button>
+      </div>
+    </div>
+    </sc-if>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{homeBooked}}" hint-placeholder-val="{{ false }}">
+  <div style="background: #15211C; color: #FFFFFF; border-radius: 22px; padding: 18px; display: flex; flex-direction: column; gap: 10px">
+    <div style="font-size: 15px; font-weight: 800; color: {{accent}}">{{t.nextJob}}</div>
+    <div><div style="font-size: 22px; font-weight: 800; line-height: 1.15">{{curFactory}}</div><div style="font-size: 15px; color: #C9D2CC">{{curTitle}}</div></div>
+    <div style="font-size: 16px">{{curDates}} · {{curTime}}</div>
+    <div style="font-size: 15px; color: #C9D2CC">{{curGate}}</div>
+    <button onClick="{{goShift}}" style="min-height: 56px; border: none; border-radius: 16px; background: {{accent}}; color: #15211C; font-size: 19px; font-weight: 800; padding: 6px 12px">{{t.checkIn}}</button>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{homeWorking}}" hint-placeholder-val="{{ false }}">
+  <div style="background: #0E6B5C; color: #FFFFFF; border-radius: 22px; padding: 18px; display: flex; flex-direction: column; gap: 10px">
+    <div style="font-size: 14px; font-weight: 800; letter-spacing: .04em">RIGHT NOW</div>
+    <div style="font-size: 21px; font-weight: 800; line-height: 1.2">{{workingTitle}}</div>
+    <div style="font-size: 15px">{{curFactory}} · Day 1 of {{curDays}}</div>
+    <button onClick="{{goShift}}" style="height: 56px; border: none; border-radius: 16px; background: #FFFFFF; color: #0A5246; font-size: 19px; font-weight: 800">Open shift</button>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{homePaid}}" hint-placeholder-val="{{ false }}">
+  <div style="display: flex; flex-direction: column; gap: 14px">
+    <div style="background: #0E6B5C; color: #FFFFFF; border-radius: 22px; padding: 16px 20px">
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px"><span style="font-size: 16px; font-weight: 600">{{t.today}}</span><span style="font-size: 13px; font-weight: 700; background: #FFFFFF; color: #0E6B5C; padding: 3px 10px; border-radius: 12px">Paid</span></div>
+      <div style="font-size: 40px; font-weight: 800; line-height: 1.15">₹{{curRateText}}</div>
+      <div style="font-size: 15px">In your UPI account</div>
+    </div>
+    <div style="background: #FFFFFF; border-radius: 22px; padding: 16px; display: flex; flex-direction: column; gap: 6px">
+      <div style="font-size: 14px; font-weight: 800; color: #0E6B5C; letter-spacing: .04em">TOMORROW</div>
+      <div style="font-size: 20px; font-weight: 800; line-height: 1.15">Day 2 of {{curDays}} · {{curFactory}}</div>
+      <div style="font-size: 15px; color: #56625B">{{curTime}} · We will remind you at 7 AM</div>
+    </div>
+  </div>
+  </sc-if>
+
+  <button onClick="{{goJobs}}" style="min-height: 60px; border: none; border-radius: 20px; background: #15211C; color: #FFFFFF; display: flex; align-items: center; justify-content: center; gap: 12px; font-size: 17px; font-weight: 700; padding: 6px 14px">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0M12 18v3"></path></svg>
+    <span>{{t.speak}}</span>
+  </button>
+</div>
+</sc-if>
+
+<sc-if value="{{isJobs}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 12px">
+  <div style="font-size: 24px; font-weight: 800">{{t.jobs}}</div>
+  <sc-if value="{{hasJob}}" hint-placeholder-val="{{ false }}">
+    <button onClick="{{goShift}}" style="border: none; background: #15211C; color: #FFFFFF; border-radius: 20px; padding: 16px; text-align: left; display: flex; flex-direction: column; gap: 4px">
+      <span style="font-size: 14px; font-weight: 800; color: {{accent}}; letter-spacing: .04em">YOUR BOOKED JOB</span>
+      <span style="font-size: 20px; font-weight: 800; line-height: 1.2">{{curFactory}}</span>
+      <span style="font-size: 15px; color: #C9D2CC">{{curDates}} · ₹{{curRateText}} {{l.perDay}} · {{stageLabel}}</span>
+    </button>
+  </sc-if>
+  <div style="font-size: 17px; font-weight: 700; color: #56625B">Matching your skill ({{offerCount}})</div>
+  <sc-for list="{{offers}}" as="j" hint-placeholder-count="3">
+    <button onClick="{{j.open}}" style="border: 2px solid {{j.border}}; background: #FFFFFF; color: #15211C; border-radius: 20px; padding: 16px; text-align: left; display: flex; flex-direction: column; gap: 10px">
+      <span style="display: flex; justify-content: space-between; gap: 10px; align-items: flex-start">
+        <span><span style="display: block; font-size: 19px; font-weight: 800; line-height: 1.2">{{j.title}}</span><span style="display: block; font-size: 15px; color: #56625B">{{j.factory}}</span></span>
+        <span style="text-align: right; flex-shrink: 0"><span style="display: block; font-size: 22px; font-weight: 800; line-height: 1.1">₹{{j.rateText}}</span><span style="display: block; font-size: 13px; color: #56625B">{{l.perDay}}</span></span>
+      </span>
+      <span style="display: flex; flex-wrap: wrap; gap: 8px">
+        <span style="font-size: 14px; font-weight: 700; background: #F3F4EF; padding: 5px 10px; border-radius: 10px">{{j.days}} {{l.days}}</span>
+        <span style="font-size: 14px; font-weight: 700; background: #F3F4EF; padding: 5px 10px; border-radius: 10px">{{j.dist}}</span>
+        <span style="font-size: 14px; font-weight: 700; background: #F3F4EF; padding: 5px 10px; border-radius: 10px">{{j.dates}}</span>
+      </span>
+    </button>
+  </sc-for>
+  <sc-if value="{{noOffers}}" hint-placeholder-val="{{ false }}">
+    <div style="background: #FFFFFF; border-radius: 20px; padding: 20px; font-size: 16px; color: #56625B; text-align: center">No new jobs right now. We will alert you when one arrives.</div>
+  </sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{isDetail}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 12px">
+  <div style="display: flex; align-items: center; gap: 10px">
+    <button onClick="{{goJobs}}" aria-label="Back" style="width: 48px; height: 48px; border-radius: 24px; border: none; background: #FFFFFF; color: #15211C; display: flex; align-items: center; justify-content: center; flex-shrink: 0">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg>
+    </button>
+    <div style="font-size: 19px; font-weight: 800; line-height: 1.2">{{t.jobDetails}}</div>
+  </div>
+  <div style="background: #15211C; color: #FFFFFF; border-radius: 22px; padding: 18px 20px">
+    <div style="font-size: 16px; color: #C9D2CC">{{curTitle}} · {{curFactory}}</div>
+    <div style="font-size: 46px; font-weight: 800; line-height: 1.1">₹{{curRateText}}<span style="font-size: 20px; font-weight: 600"> {{l.perDay}}</span></div>
+    <div style="font-size: 16px">₹{{curTotalText}} for {{curDays}} days</div>
+  </div>
+  <button aria-label="Listen to job details" style="min-height: 52px; border-radius: 16px; border: 2px solid #15211C; background: transparent; color: #15211C; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 18px; font-weight: 700">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"></path><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"></path></svg>
+    <span>{{t.listen}}</span>
+  </button>
+  <div style="background: #FFFFFF; border-radius: 22px; padding: 4px 18px">
+    <div style="display: flex; gap: 14px; align-items: center; padding: 11px 0; border-bottom: 1px solid #E6E8E1">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0E6B5C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"></path><circle cx="12" cy="10" r="2.5"></circle></svg>
+      <div><div style="font-size: 17px; font-weight: 700">{{curArea}}</div><div style="font-size: 14px; color: #56625B">{{curDist}} away</div></div>
+    </div>
+    <div style="display: flex; gap: 14px; align-items: center; padding: 11px 0; border-bottom: 1px solid #E6E8E1">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0E6B5C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+      <div><div style="font-size: 17px; font-weight: 700">{{curDates}} · {{curTime}}</div><div style="font-size: 14px; color: #56625B">Lunch break 45 min</div></div>
+    </div>
+    <div style="display: flex; gap: 14px; align-items: center; padding: 11px 0; border-bottom: 1px solid #E6E8E1">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0E6B5C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"></path><path d="M9 12l2 2 4-4"></path></svg>
+      <div><div style="font-size: 17px; font-weight: 700">Insured every shift</div><div style="font-size: 14px; color: #56625B">Accident cover, paid by the employer</div></div>
+    </div>
+    <div style="display: flex; gap: 14px; align-items: center; padding: 11px 0">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0E6B5C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4h10M7 9h10M7 4c6 0 6 10 0 10l8 7"></path></svg>
+      <div><div style="font-size: 17px; font-weight: 700">Payment secured</div><div style="font-size: 14px; color: #56625B">The employer has already paid. Released to your account after each shift.</div></div>
+    </div>
+  </div>
+  <sc-if value="{{canAccept}}" hint-placeholder-val="{{ true }}">
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+      <button onClick="{{decline}}" style="min-height: 64px; border-radius: 18px; border: 2px solid #B3261E; background: #FFFFFF; color: #B3261E; font-size: 19px; font-weight: 800; padding: 6px">{{t.no}}</button>
+      <button onClick="{{accept}}" style="min-height: 64px; border-radius: 18px; border: none; background: {{accent}}; color: #15211C; font-size: 19px; font-weight: 800; padding: 6px">{{t.yes}}</button>
+    </div>
+  </sc-if>
+  <sc-if value="{{cantAccept}}" hint-placeholder-val="{{ false }}">
+    <div style="background: #FFF4CC; border-radius: 16px; padding: 14px; font-size: 15px; font-weight: 700; color: #3D3A2E">You already have a booked job. Finish it before taking another.</div>
+  </sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{isConfirmed}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 14px; align-items: center; text-align: center; padding-top: 16px">
+  <div style="width: 104px; height: 104px; border-radius: 52px; background: #0E6B5C; color: #FFFFFF; display: flex; align-items: center; justify-content: center">
+    <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg>
+  </div>
+  <div style="font-size: 30px; font-weight: 800; line-height: 1.2">{{l.confirmed}}</div>
+  <div style="font-size: 17px; color: #56625B; margin-top: -8px">{{e.confirmed}} The employer has been told.</div>
+  <div style="width: 100%; box-sizing: border-box; background: #FFFFFF; border-radius: 20px; padding: 4px 18px; text-align: left">
+    <div style="padding: 12px 0; border-bottom: 1px solid #E6E8E1"><div style="font-size: 14px; color: #56625B">{{t.where}}</div><div style="font-size: 18px; font-weight: 800">{{curFactory}}</div><div style="font-size: 15px; color: #56625B">{{curGate}}</div></div>
+    <div style="padding: 12px 0; border-bottom: 1px solid #E6E8E1"><div style="font-size: 14px; color: #56625B">{{t.when}}</div><div style="font-size: 18px; font-weight: 800">{{curDates}} · {{curTime}}</div></div>
+    <div style="padding: 12px 0"><div style="font-size: 14px; color: #56625B">What to bring</div><div style="font-size: 18px; font-weight: 800">Phone and Aadhaar</div><div style="font-size: 15px; color: #56625B">Safety gear is given at the gate</div></div>
+  </div>
+  <div style="width: 100%; box-sizing: border-box; background: #FFF4CC; border-radius: 16px; padding: 14px; font-size: 15px; font-weight: 700; color: #3D3A2E; text-align: left">We will remind you at 7 AM. If you cannot come, cancel early or your show-up score drops.</div>
+  <button onClick="{{goShift}}" style="width: 100%; height: 60px; border-radius: 18px; border: none; background: {{accent}}; color: #15211C; font-size: 19px; font-weight: 800">Go to job day (demo)</button>
+  <button onClick="{{goHome}}" style="width: 100%; min-height: 48px; border: none; background: transparent; color: #56625B; font-size: 16px; font-weight: 700">{{t.home}}</button>
+</div>
+</sc-if>
+
+<sc-if value="{{isShift}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 14px">
+  <div>
+    <div style="font-size: 15px; font-weight: 700; color: #0E6B5C">Day 1 of {{curDays}}</div>
+    <div style="font-size: 24px; font-weight: 800; line-height: 1.15">{{curFactory}}</div>
+    <div style="font-size: 15px; color: #56625B">{{curGate}}</div>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px">
+    <sc-for list="{{shiftSteps}}" as="s" hint-placeholder-count="4">
+      <div style="display: flex; flex-direction: column; gap: 4px"><div style="height: 6px; border-radius: 3px; background: {{s.bg}}"></div><div style="font-size: 13px; font-weight: 700; color: {{s.fg}}">{{s.label}}</div></div>
+    </sc-for>
+  </div>
+
+  <sc-if value="{{stNotIn}}" hint-placeholder-val="{{ true }}">
+  <div style="display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 10px 0">
+    <button onClick="{{checkIn}}" style="width: 220px; height: 220px; border-radius: 110px; border: 10px solid #FFF4CC; background: {{accent}}; color: #15211C; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 0 18px">
+      <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"></path><circle cx="12" cy="10" r="2.5"></circle></svg>
+      <span style="font-size: 22px; font-weight: 800; line-height: 1.2">{{l.checkIn}}</span>
+      <span style="font-size: 16px; font-weight: 600">{{e.checkIn}}</span>
+    </button>
+    <div style="font-size: 15px; color: #56625B; text-align: center; max-width: 290px">Tap at the gate. Location is checked automatically.</div>
+    <button style="height: 48px; border-radius: 14px; border: 2px solid #15211C; background: transparent; color: #15211C; font-size: 16px; font-weight: 700; padding: 0 18px">Get directions</button>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{stIn}}" hint-placeholder-val="{{ false }}">
+  <div style="display: flex; flex-direction: column; gap: 12px">
+    <div style="background: #0E6B5C; color: #FFFFFF; border-radius: 22px; padding: 16px 18px; display: flex; align-items: center; gap: 14px">
+      <div style="width: 46px; height: 46px; border-radius: 23px; background: #FFFFFF; color: #0E6B5C; display: flex; align-items: center; justify-content: center; flex-shrink: 0">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg>
+      </div>
+      <div><div style="font-size: 19px; font-weight: 800; line-height: 1.2">{{t.onShift}}</div><div style="font-size: 15px">Checked in at 8:02 AM</div></div>
+    </div>
+    <div style="background: #FFFFFF; border-radius: 20px; padding: 4px 16px">
+      <sc-for list="{{dayPlan}}" as="m" hint-placeholder-count="4">
+        <div style="display: flex; align-items: center; gap: 12px; padding: 11px 0; border-bottom: 1px solid #E6E8E1">
+          <div style="width: 36px; height: 36px; border-radius: 18px; background: #F3F4EF; display: flex; align-items: center; justify-content: center; font-weight: 700">{{m.n}}</div>
+          <div style="flex: 1; font-size: 17px; font-weight: 600">{{m.name}}</div>
+          <span style="font-size: 14px; font-weight: 700; color: #0E6B5C">{{m.time}}</span>
+        </div>
+      </sc-for>
+    </div>
+    <button onClick="{{checkOut}}" style="min-height: 60px; border-radius: 18px; border: none; background: #15211C; color: #FFFFFF; font-size: 19px; font-weight: 800; padding: 6px 12px">{{t.checkOut}}</button>
+    <button onClick="{{goHelp}}" style="min-height: 48px; border-radius: 14px; border: 2px solid #B3261E; background: transparent; color: #B3261E; font-size: 15px; font-weight: 700; padding: 6px 12px">{{t.help}}</button>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{stAwait}}" hint-placeholder-val="{{ false }}">
+  <div style="display: flex; flex-direction: column; gap: 12px">
+    <div style="background: #FFF4CC; border-radius: 22px; padding: 18px; display: flex; flex-direction: column; gap: 6px">
+      <div style="font-size: 20px; font-weight: 800; line-height: 1.25">{{t.waiting}}</div>
+      <div style="font-size: 15px; color: #3D3A2E">Checked out at 5:03 PM. Payment is sent as soon as the supervisor approves your shift.</div>
+    </div>
+    <div style="background: #FFFFFF; border-radius: 20px; padding: 16px; display: flex; justify-content: space-between; align-items: center">
+      <div><div style="font-size: 15px; color: #56625B">Today's pay</div><div style="font-size: 30px; font-weight: 800; line-height: 1.1">₹{{curRateText}}</div></div>
+      <span style="font-size: 14px; font-weight: 800; background: #F3F4EF; padding: 6px 12px; border-radius: 12px">Pending</span>
+    </div>
+    <button onClick="{{approve}}" style="height: 60px; border-radius: 18px; border: none; background: {{accent}}; color: #15211C; font-size: 18px; font-weight: 800">Supervisor approves (demo)</button>
+  </div>
+  </sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{isHelp}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 12px">
+  <div style="display: flex; align-items: center; gap: 10px">
+    <button onClick="{{backToShift}}" aria-label="Back" style="width: 48px; height: 48px; border-radius: 24px; border: none; background: #FFFFFF; color: #15211C; display: flex; align-items: center; justify-content: center; flex-shrink: 0">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg>
+    </button>
+    <div style="font-size: 19px; font-weight: 800; line-height: 1.2">{{t.help}}</div>
+  </div>
+  <sc-if value="{{helpOpen}}" hint-placeholder-val="{{ true }}">
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <div style="font-size: 16px; color: #56625B">What is the problem? Your pay stays protected while we check.</div>
+      <sc-for list="{{helpOpts}}" as="h" hint-placeholder-count="4">
+        <button onClick="{{h.pick}}" style="min-height: 60px; border-radius: 16px; border: 2px solid #15211C; background: #FFFFFF; color: #15211C; font-size: 17px; font-weight: 800; text-align: left; padding: 8px 16px">{{h.label}}</button>
+      </sc-for>
+    </div>
+  </sc-if>
+  <sc-if value="{{helpDone}}" hint-placeholder-val="{{ false }}">
+    <div style="background: #E3F2EE; color: #0A5246; border-radius: 18px; padding: 16px; display: flex; flex-direction: column; gap: 6px">
+      <div style="font-size: 18px; font-weight: 800">Report received</div>
+      <div style="font-size: 15px; font-weight: 700">{{helpSent}}</div>
+      <div style="font-size: 15px">Our support team will call you. You will not lose pay or rating for reporting a real problem.</div>
+    </div>
+  </sc-if>
+  <button style="min-height: 60px; border-radius: 16px; border: none; background: #B3261E; color: #FFFFFF; font-size: 18px; font-weight: 800">Emergency: call 112</button>
+</div>
+</sc-if>
+
+<sc-if value="{{isPaid}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 14px; align-items: center; text-align: center; padding-top: 14px">
+  <div style="width: 104px; height: 104px; border-radius: 52px; background: #0E6B5C; color: #FFFFFF; display: flex; align-items: center; justify-content: center">
+    <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg>
+  </div>
+  <div style="font-size: 50px; font-weight: 800; line-height: 1">₹{{curRateText}}</div>
+  <div style="font-size: 20px; font-weight: 700; line-height: 1.25">{{l.paidMsg}}</div>
+  <div style="font-size: 15px; color: #56625B; margin-top: -8px">{{e.paidMsg}} · 5:14 PM</div>
+  <div style="width: 100%; box-sizing: border-box; background: #FFFFFF; border-radius: 20px; padding: 16px; text-align: left; display: flex; flex-direction: column; gap: 6px">
+    <div style="font-size: 14px; color: #56625B">Supervisor's rating: 5 / 5</div>
+    <div style="font-size: 17px; font-weight: 700">“Clean welds, on time.”</div>
+    <div style="font-size: 15px; color: #0E6B5C; font-weight: 700">+1 job added to your Skill Passport</div>
+  </div>
+  <div style="width: 100%; box-sizing: border-box; background: #FFFFFF; border-radius: 20px; padding: 16px; text-align: left; display: flex; flex-direction: column; gap: 8px">
+    <div style="font-size: 17px; font-weight: 800; line-height: 1.25">{{t.rateFactory}}</div>
+    <div style="display: flex; gap: 4px">
+      <sc-for list="{{stars}}" as="st" hint-placeholder-count="5">
+        <button onClick="{{st.pick}}" aria-label="{{st.label}}" style="width: 52px; height: 48px; border: none; background: transparent; color: {{st.col}}; display: flex; align-items: center; justify-content: center; padding: 0">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3l2.8 5.8 6.2.9-4.5 4.4 1 6.2L12 17.4 6.5 20.3l1-6.2L3 9.7l6.2-.9z"></path></svg>
+        </button>
+      </sc-for>
+    </div>
+    <div style="font-size: 14px; color: #56625B">{{ratingNote}}</div>
+  </div>
+  <button onClick="{{goHome}}" style="width: 100%; min-height: 60px; border-radius: 18px; border: none; background: {{accent}}; color: #15211C; font-size: 20px; font-weight: 800">{{t.home}}</button>
+</div>
+</sc-if>
+
+<sc-if value="{{isEarnings}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 14px">
+  <div style="font-size: 24px; font-weight: 800">{{t.earnings}}</div>
+  <div style="background: #0E6B5C; color: #FFFFFF; border-radius: 22px; padding: 18px 20px">
+    <div style="font-size: 16px; font-weight: 600">November</div>
+    <div style="font-size: 44px; font-weight: 800; line-height: 1.15">₹{{monthText}}</div>
+    <div style="font-size: 15px">{{daysWorked}} days worked · paid to your {{payoutLabel}}</div>
+  </div>
+  <div style="font-size: 17px; font-weight: 700; color: #56625B">Every payment</div>
+  <div style="background: #FFFFFF; border-radius: 20px; padding: 4px 16px">
+    <sc-for list="{{payments}}" as="p" hint-placeholder-count="4">
+      <div style="display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #E6E8E1">
+        <div style="flex: 1"><div style="font-size: 17px; font-weight: 700">{{p.place}}</div><div style="font-size: 14px; color: #56625B">{{p.date}} · paid same day</div></div>
+        <div style="font-size: 18px; font-weight: 800">₹{{p.amt}}</div>
+      </div>
+    </sc-for>
+  </div>
+  <button style="height: 52px; border-radius: 16px; border: 2px solid #15211C; background: transparent; color: #15211C; font-size: 16px; font-weight: 700">Download income statement</button>
+</div>
+</sc-if>
+
+<sc-if value="{{isPassport}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 14px">
+  <div style="font-size: 22px; font-weight: 800; line-height: 1.25">{{t.passport}}</div>
+  <div style="background: #15211C; color: #FFFFFF; border-radius: 22px; padding: 20px; display: flex; flex-direction: column; gap: 14px">
+    <div style="display: flex; gap: 14px; align-items: center">
+      <div style="width: 64px; height: 64px; border-radius: 16px; background: {{accent}}; color: #15211C; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 800">R</div>
+      <div style="flex: 1">
+        <div style="font-size: 22px; font-weight: 800; line-height: 1.1">Raju Mondal</div>
+        <div style="font-size: 15px; color: #C9D2CC">{{skillLine}} · Level 2</div>
+        <div style="font-size: 14px; font-weight: 700; color: #8FE0CC">ID verified</div>
+      </div>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+      <div><div style="font-size: 26px; font-weight: 800">{{jobsDone}}</div><div style="font-size: 13px; color: #C9D2CC">jobs done</div></div>
+      <div><div style="font-size: 26px; font-weight: 800">4.8</div><div style="font-size: 13px; color: #C9D2CC">rating</div></div>
+      <div><div style="font-size: 26px; font-weight: 800">96%</div><div style="font-size: 13px; color: #C9D2CC">showed up</div></div>
+    </div>
+  </div>
+  <div style="font-size: 18px; font-weight: 700">Proven skills</div>
+  <div style="background: #FFFFFF; border-radius: 20px; padding: 4px 16px">
+    <sc-for list="{{proven}}" as="s" hint-placeholder-count="3">
+      <div style="display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #E6E8E1">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0E6B5C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg>
+        <div style="flex: 1"><div style="font-size: 17px; font-weight: 700">{{s.name}}</div><div style="font-size: 14px; color: #56625B">{{s.proof}}</div></div>
+      </div>
+    </sc-for>
+  </div>
+  <button onClick="{{addVideo}}" style="height: 56px; border-radius: 16px; border: 2px solid #15211C; background: {{videoBg}}; color: #15211C; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 17px; font-weight: 700">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="13" height="12" rx="2"></rect><path d="M16 10l5-3v10l-5-3"></path></svg>
+    {{videoLabel}}
+  </button>
+  <div style="background: #FFF4CC; border-radius: 20px; padding: 18px; display: flex; flex-direction: column; gap: 8px">
+    <div style="font-size: 14px; font-weight: 700; color: #6B4E00">{{t.nextLevel}}</div>
+    <div style="font-size: 20px; font-weight: 800; line-height: 1.2">TIG Welder → ₹1,250 {{l.perDay}}</div>
+    <div style="font-size: 15px; color: #3D3A2E">10-day course at a partner ITI. Earn ₹300 more every day.</div>
+    <button onClick="{{askCourse}}" style="height: 52px; border-radius: 14px; border: none; background: #15211C; color: #FFFFFF; font-size: 17px; font-weight: 700">{{courseLabel}}</button>
+  </div>
+</div>
+</sc-if>
+
+</div>
+
+<sc-if value="{{showNav}}" hint-placeholder-val="{{ false }}">
+<nav style="min-height: 76px; flex-shrink: 0; background: #FFFFFF; border-top: 1px solid #DADDD3; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr))">
+  <button onClick="{{goHome}}" style="border: none; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; font-size: 13px; font-weight: 700; line-height: 1.15; padding: 6px 2px; color: {{navHome}}">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"></path></svg>
+    <span>{{l.home}}</span>
+  </button>
+  <button onClick="{{goJobs}}" style="border: none; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; font-size: 13px; font-weight: 700; line-height: 1.15; padding: 6px 2px; color: {{navJobs}}">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"></rect><path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg>
+    <span>{{l.jobs}}</span>
+  </button>
+  <button onClick="{{goEarnings}}" style="border: none; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; font-size: 13px; font-weight: 700; line-height: 1.15; padding: 6px 2px; color: {{navEarn}}">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4h10M7 9h10M7 4c6 0 6 10 0 10l8 7"></path></svg>
+    <span>{{l.earnings}}</span>
+  </button>
+  <button onClick="{{goPassport}}" style="border: none; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; font-size: 13px; font-weight: 700; line-height: 1.15; padding: 6px 2px; color: {{navPassport}}">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"></rect><circle cx="12" cy="10" r="3"></circle><path d="M8 17h8"></path></svg>
+    <span>{{l.passport}}</span>
+  </button>
+</nav>
+</sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#F5B301","options":["#F5B301","#FF8A3D","#7FD1B9"]},"$preview":{"width":390,"height":844}}'>
+const KEYS = ['tagline','chooseLang','moreLang','cont','enterPhone','sendOtp','back','enterOtp','verify','whatWork','experience','next','idPay','startWork','hello','available','notAvailable','thisMonth','newJob','viewJob','perDay','days','speak','jobs','jobDetails','listen','yes','no','confirmed','where','when','checkIn','onShift','checkOut','waiting','paidMsg','rateFactory','earnings','passport','home','nextJob','today','help','nextLevel'];
+const TR = {
+  en: ['Work finds you. Paid the same day.','Choose your language','More languages','Continue','Enter your mobile number','Send OTP','Back','Enter OTP','Verify','What work do you do?','Years of experience','Next','Identity and payment','Start getting work','Hello','Available for work','Not available','Earnings this month','New job for you','View job','per day','days','Speak to find work','Jobs','Job details','Listen','Yes','No','Job confirmed!','Where','When','Check in','On shift','Check out','Waiting for approval','Money is in your account','Rate the employer','Earnings','Skill Passport','Home','Your next job',"Today's earnings",'Problem? Call help','Next level'],
+  hi: ['काम आपके पास। पैसा उसी दिन।','अपनी भाषा चुनें','और भाषाएँ','आगे बढ़ें','अपना मोबाइल नंबर डालें','OTP भेजें','पीछे','OTP डालें','पक्का करें','आप क्या काम करते हैं?','कितने साल का अनुभव','आगे','पहचान और पेमेंट','काम पाना शुरू करें','नमस्ते','काम के लिए उपलब्ध','अभी उपलब्ध नहीं','इस महीने की कमाई','नया काम आया','काम देखें','प्रति दिन','दिन','बोलकर काम ढूंढें','काम','काम की जानकारी','सुनें','हाँ','नहीं','काम पक्का!','कहाँ','कब','पहुँच गया','शिफ्ट चालू','काम पूरा','मंज़ूरी का इंतज़ार','पैसा आपके खाते में आ गया','फैक्ट्री को रेटिंग दें','कमाई','स्किल पासपोर्ट','होम','आपका अगला काम','आज की कमाई','दिक्कत है? मदद बुलाएँ','अगला लेवल'],
+  bn: ['কাজ আসবে আপনার কাছে। টাকা সেদিনই।','আপনার ভাষা বেছে নিন','আরও ভাষা','এগিয়ে যান','আপনার মোবাইল নম্বর দিন','OTP পাঠান','পিছনে','OTP দিন','যাচাই করুন','আপনি কী কাজ করেন?','কত বছরের অভিজ্ঞতা','পরবর্তী','পরিচয় ও পেমেন্ট','কাজ পাওয়া শুরু করুন','নমস্কার','কাজের জন্য উপলব্ধ','এখন উপলব্ধ নই','এই মাসের আয়','নতুন কাজ এসেছে','কাজ দেখুন','প্রতি দিন','দিন','বলে কাজ খুঁজুন','কাজ','কাজের বিবরণ','শুনুন','হ্যাঁ','না','কাজ পাকা!','কোথায়','কখন','পৌঁছে গেছি','শিফট চলছে','কাজ শেষ','অনুমোদনের অপেক্ষা','টাকা আপনার অ্যাকাউন্টে এসেছে','কারখানাকে রেটিং দিন','আয়','স্কিল পাসপোর্ট','হোম','আপনার পরের কাজ','আজকের আয়','সমস্যা? সাহায্য ডাকুন','পরের লেভেল'],
+  mr: ['काम तुमच्याकडे येईल. पैसे त्याच दिवशी.','तुमची भाषा निवडा','आणखी भाषा','पुढे चला','तुमचा मोबाईल नंबर टाका','OTP पाठवा','मागे','OTP टाका','खात्री करा','तुम्ही काय काम करता?','किती वर्षांचा अनुभव','पुढे','ओळख आणि पेमेंट','काम मिळवायला सुरुवात करा','नमस्कार','कामासाठी उपलब्ध','सध्या उपलब्ध नाही','या महिन्याची कमाई','नवीन काम आले','काम पहा','प्रति दिवस','दिवस','बोलून काम शोधा','काम','कामाची माहिती','ऐका','हो','नाही','काम पक्के!','कुठे','केव्हा','पोहोचलो','शिफ्ट सुरू','काम पूर्ण','मंजुरीची वाट','पैसे तुमच्या खात्यात आले','कारखान्याला रेटिंग द्या','कमाई','स्किल पासपोर्ट','होम','तुमचे पुढचे काम','आजची कमाई','अडचण आहे? मदत बोलवा','पुढची लेव्हल'],
+  ta: ['வேலை உங்களைத் தேடி வரும். அன்றே சம்பளம்.','உங்கள் மொழியைத் தேர்ந்தெடுக்கவும்','மேலும் மொழிகள்','தொடரவும்','உங்கள் மொபைல் எண்ணை உள்ளிடவும்','OTP அனுப்பு','பின்செல்','OTP உள்ளிடவும்','சரிபார்','நீங்கள் என்ன வேலை செய்கிறீர்கள்?','எத்தனை ஆண்டு அனுபவம்','அடுத்து','அடையாளம் மற்றும் பணம்','வேலை பெறத் தொடங்குங்கள்','வணக்கம்','வேலைக்குத் தயார்','இப்போது கிடைக்கவில்லை','இந்த மாத வருமானம்','புதிய வேலை வந்துள்ளது','வேலையைப் பார்','ஒரு நாளுக்கு','நாட்கள்','பேசி வேலை தேடுங்கள்','வேலைகள்','வேலை விவரம்','கேளுங்கள்','ஆம்','இல்லை','வேலை உறுதி!','எங்கே','எப்போது','வந்துவிட்டேன்','ஷிப்ட் நடக்கிறது','வேலை முடிந்தது','ஒப்புதலுக்காகக் காத்திருக்கிறது','பணம் உங்கள் கணக்கில் வந்துவிட்டது','தொழிற்சாலையை மதிப்பிடுங்கள்','வருமானம்','திறன் பாஸ்போர்ட்','முகப்பு','உங்கள் அடுத்த வேலை','இன்றைய வருமானம்','பிரச்சனையா? உதவிக்கு அழைக்கவும்','அடுத்த நிலை'],
+  te: ['పని మీ దగ్గరకే వస్తుంది. అదే రోజు డబ్బు.','మీ భాషను ఎంచుకోండి','మరిన్ని భాషలు','కొనసాగించండి','మీ మొబైల్ నంబర్ నమోదు చేయండి','OTP పంపండి','వెనుకకు','OTP నమోదు చేయండి','ధృవీకరించండి','మీరు ఏ పని చేస్తారు?','ఎన్ని సంవత్సరాల అనుభవం','తరువాత','గుర్తింపు మరియు చెల్లింపు','పని పొందడం ప్రారంభించండి','నమస్కారం','పనికి అందుబాటులో ఉన్నాను','ఇప్పుడు అందుబాటులో లేను','ఈ నెల సంపాదన','కొత్త పని వచ్చింది','పని చూడండి','రోజుకు','రోజులు','మాట్లాడి పని వెతకండి','పనులు','పని వివరాలు','వినండి','అవును','కాదు','పని ఖాయం!','ఎక్కడ','ఎప్పుడు','చేరుకున్నాను','షిఫ్ట్ జరుగుతోంది','పని పూర్తయింది','ఆమోదం కోసం వేచి ఉంది','డబ్బు మీ ఖాతాలో జమ అయింది','ఫ్యాక్టరీకి రేటింగ్ ఇవ్వండి','సంపాదన','స్కిల్ పాస్‌పోర్ట్','హోమ్','మీ తదుపరి పని','ఈ రోజు సంపాదన','సమస్యా? సహాయం కోసం కాల్ చేయండి','తదుపరి స్థాయి'],
+  gu: ['કામ તમારી પાસે આવશે. પૈસા એ જ દિવસે.','તમારી ભાષા પસંદ કરો','વધુ ભાષાઓ','આગળ વધો','તમારો મોબાઇલ નંબર નાખો','OTP મોકલો','પાછળ','OTP નાખો','ખાતરી કરો','તમે શું કામ કરો છો?','કેટલા વર્ષનો અનુભવ','આગળ','ઓળખ અને પેમેન્ટ','કામ મેળવવાનું શરૂ કરો','નમસ્તે','કામ માટે ઉપલબ્ધ','હાલ ઉપલબ્ધ નથી','આ મહિનાની કમાણી','નવું કામ આવ્યું','કામ જુઓ','પ્રતિ દિવસ','દિવસ','બોલીને કામ શોધો','કામ','કામની માહિતી','સાંભળો','હા','ના','કામ પાકું!','ક્યાં','ક્યારે','પહોંચી ગયો','શિફ્ટ ચાલુ','કામ પૂરું','મંજૂરીની રાહ','પૈસા તમારા ખાતામાં આવી ગયા','ફેક્ટરીને રેટિંગ આપો','કમાણી','સ્કિલ પાસપોર્ટ','હોમ','તમારું આગલું કામ','આજની કમાણી','તકલીફ છે? મદદ બોલાવો','આગલું લેવલ'],
+  kn: ['ಕೆಲಸ ನಿಮ್ಮ ಬಳಿಗೆ ಬರುತ್ತದೆ. ಅದೇ ದಿನ ಹಣ.','ನಿಮ್ಮ ಭಾಷೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ','ಇನ್ನಷ್ಟು ಭಾಷೆಗಳು','ಮುಂದುವರಿಸಿ','ನಿಮ್ಮ ಮೊಬೈಲ್ ಸಂಖ್ಯೆ ನಮೂದಿಸಿ','OTP ಕಳುಹಿಸಿ','ಹಿಂದೆ','OTP ನಮೂದಿಸಿ','ಪರಿಶೀಲಿಸಿ','ನೀವು ಯಾವ ಕೆಲಸ ಮಾಡುತ್ತೀರಿ?','ಎಷ್ಟು ವರ್ಷಗಳ ಅನುಭವ','ಮುಂದೆ','ಗುರುತು ಮತ್ತು ಪಾವತಿ','ಕೆಲಸ ಪಡೆಯಲು ಪ್ರಾರಂಭಿಸಿ','ನಮಸ್ಕಾರ','ಕೆಲಸಕ್ಕೆ ಲಭ್ಯ','ಈಗ ಲಭ್ಯವಿಲ್ಲ','ಈ ತಿಂಗಳ ಗಳಿಕೆ','ಹೊಸ ಕೆಲಸ ಬಂದಿದೆ','ಕೆಲಸ ನೋಡಿ','ದಿನಕ್ಕೆ','ದಿನಗಳು','ಮಾತನಾಡಿ ಕೆಲಸ ಹುಡುಕಿ','ಕೆಲಸಗಳು','ಕೆಲಸದ ವಿವರ','ಕೇಳಿ','ಹೌದು','ಇಲ್ಲ','ಕೆಲಸ ಖಚಿತ!','ಎಲ್ಲಿ','ಯಾವಾಗ','ತಲುಪಿದ್ದೇನೆ','ಶಿಫ್ಟ್ ನಡೆಯುತ್ತಿದೆ','ಕೆಲಸ ಮುಗಿಯಿತು','ಅನುಮೋದನೆಗಾಗಿ ಕಾಯುತ್ತಿದೆ','ಹಣ ನಿಮ್ಮ ಖಾತೆಗೆ ಬಂದಿದೆ','ಕಾರ್ಖಾನೆಗೆ ರೇಟಿಂಗ್ ನೀಡಿ','ಗಳಿಕೆ','ಸ್ಕಿಲ್ ಪಾಸ್‌ಪೋರ್ಟ್','ಮುಖಪುಟ','ನಿಮ್ಮ ಮುಂದಿನ ಕೆಲಸ','ಇಂದಿನ ಗಳಿಕೆ','ಸಮಸ್ಯೆಯೇ? ಸಹಾಯಕ್ಕೆ ಕರೆ ಮಾಡಿ','ಮುಂದಿನ ಹಂತ'],
+  ml: ['ജോലി നിങ്ങളെ തേടി വരും. അന്നുതന്നെ പണം.','നിങ്ങളുടെ ഭാഷ തിരഞ്ഞെടുക്കുക','കൂടുതൽ ഭാഷകൾ','തുടരുക','നിങ്ങളുടെ മൊബൈൽ നമ്പർ നൽകുക','OTP അയയ്ക്കുക','പിന്നോട്ട്','OTP നൽകുക','സ്ഥിരീകരിക്കുക','നിങ്ങൾ എന്ത് ജോലി ചെയ്യുന്നു?','എത്ര വർഷത്തെ പരിചയം','അടുത്തത്','തിരിച്ചറിയലും പേയ്മെന്റും','ജോലി നേടാൻ തുടങ്ങുക','നമസ്കാരം','ജോലിക്ക് ലഭ്യമാണ്','ഇപ്പോൾ ലഭ്യമല്ല','ഈ മാസത്തെ വരുമാനം','പുതിയ ജോലി വന്നു','ജോലി കാണുക','ദിവസത്തിന്','ദിവസം','സംസാരിച്ച് ജോലി തിരയുക','ജോലികൾ','ജോലിയുടെ വിവരങ്ങൾ','കേൾക്കുക','അതെ','വേണ്ട','ജോലി ഉറപ്പായി!','എവിടെ','എപ്പോൾ','എത്തി','ഷിഫ്റ്റ് നടക്കുന്നു','ജോലി കഴിഞ്ഞു','അനുമതിക്കായി കാത്തിരിക്കുന്നു','പണം നിങ്ങളുടെ അക്കൗണ്ടിൽ എത്തി','ഫാക്ടറിക്ക് റേറ്റിംഗ് നൽകുക','വരുമാനം','സ്കിൽ പാസ്പോർട്ട്','ഹോം','നിങ്ങളുടെ അടുത്ത ജോലി','ഇന്നത്തെ വരുമാനം','പ്രശ്നമുണ്ടോ? സഹായം വിളിക്കുക','അടുത്ത ലെവൽ'],
+  pa: ['ਕੰਮ ਤੁਹਾਡੇ ਕੋਲ ਆਵੇਗਾ। ਪੈਸੇ ਉਸੇ ਦਿਨ।','ਆਪਣੀ ਭਾਸ਼ਾ ਚੁਣੋ','ਹੋਰ ਭਾਸ਼ਾਵਾਂ','ਅੱਗੇ ਵਧੋ','ਆਪਣਾ ਮੋਬਾਈਲ ਨੰਬਰ ਪਾਓ','OTP ਭੇਜੋ','ਪਿੱਛੇ','OTP ਪਾਓ','ਪੱਕਾ ਕਰੋ','ਤੁਸੀਂ ਕੀ ਕੰਮ ਕਰਦੇ ਹੋ?','ਕਿੰਨੇ ਸਾਲ ਦਾ ਤਜਰਬਾ','ਅੱਗੇ','ਪਛਾਣ ਅਤੇ ਪੇਮੈਂਟ','ਕੰਮ ਲੈਣਾ ਸ਼ੁਰੂ ਕਰੋ','ਸਤ ਸ੍ਰੀ ਅਕਾਲ','ਕੰਮ ਲਈ ਉਪਲਬਧ','ਹੁਣ ਉਪਲਬਧ ਨਹੀਂ','ਇਸ ਮਹੀਨੇ ਦੀ ਕਮਾਈ','ਨਵਾਂ ਕੰਮ ਆਇਆ','ਕੰਮ ਵੇਖੋ','ਪ੍ਰਤੀ ਦਿਨ','ਦਿਨ','ਬੋਲ ਕੇ ਕੰਮ ਲੱਭੋ','ਕੰਮ','ਕੰਮ ਦੀ ਜਾਣਕਾਰੀ','ਸੁਣੋ','ਹਾਂ','ਨਹੀਂ','ਕੰਮ ਪੱਕਾ!','ਕਿੱਥੇ','ਕਦੋਂ','ਪਹੁੰਚ ਗਿਆ','ਸ਼ਿਫਟ ਚਾਲੂ','ਕੰਮ ਪੂਰਾ','ਮਨਜ਼ੂਰੀ ਦੀ ਉਡੀਕ','ਪੈਸੇ ਤੁਹਾਡੇ ਖਾਤੇ ਵਿੱਚ ਆ ਗਏ','ਫੈਕਟਰੀ ਨੂੰ ਰੇਟਿੰਗ ਦਿਓ','ਕਮਾਈ','ਸਕਿੱਲ ਪਾਸਪੋਰਟ','ਹੋਮ','ਤੁਹਾਡਾ ਅਗਲਾ ਕੰਮ','ਅੱਜ ਦੀ ਕਮਾਈ','ਕੋਈ ਦਿੱਕਤ? ਮਦਦ ਬੁਲਾਓ','ਅਗਲਾ ਲੈਵਲ'],
+  or: ['କାମ ଆପଣଙ୍କ ପାଖକୁ ଆସିବ। ସେହି ଦିନ ଟଙ୍କା।','ଆପଣଙ୍କ ଭାଷା ବାଛନ୍ତୁ','ଅଧିକ ଭାଷା','ଆଗକୁ ବଢ଼ନ୍ତୁ','ଆପଣଙ୍କ ମୋବାଇଲ୍ ନମ୍ବର ଦିଅନ୍ତୁ','OTP ପଠାନ୍ତୁ','ପଛକୁ','OTP ଦିଅନ୍ତୁ','ଯାଞ୍ଚ କରନ୍ତୁ','ଆପଣ କି କାମ କରନ୍ତି?','କେତେ ବର୍ଷର ଅଭିଜ୍ଞତା','ପରବର୍ତ୍ତୀ','ପରିଚୟ ଓ ପେମେଣ୍ଟ','କାମ ପାଇବା ଆରମ୍ଭ କରନ୍ତୁ','ନମସ୍କାର','କାମ ପାଇଁ ଉପଲବ୍ଧ','ଏବେ ଉପଲବ୍ଧ ନାହିଁ','ଏହି ମାସର ରୋଜଗାର','ନୂଆ କାମ ଆସିଛି','କାମ ଦେଖନ୍ତୁ','ପ୍ରତି ଦିନ','ଦିନ','କହି କାମ ଖୋଜନ୍ତୁ','କାମ','କାମର ବିବରଣୀ','ଶୁଣନ୍ତୁ','ହଁ','ନା','କାମ ପକ୍କା!','କେଉଁଠି','କେବେ','ପହଞ୍ଚିଗଲି','ସିଫ୍ଟ ଚାଲିଛି','କାମ ସରିଲା','ଅନୁମୋଦନ ଅପେକ୍ଷାରେ','ଟଙ୍କା ଆପଣଙ୍କ ଖାତାକୁ ଆସିଛି','କାରଖାନାକୁ ରେଟିଂ ଦିଅନ୍ତୁ','ରୋଜଗାର','ସ୍କିଲ୍ ପାସପୋର୍ଟ','ହୋମ୍','ଆପଣଙ୍କ ପରବର୍ତ୍ତୀ କାମ','ଆଜିର ରୋଜଗାର','ଅସୁବିଧା? ସାହାଯ୍ୟ ଡାକନ୍ତୁ','ପରବର୍ତ୍ତୀ ଲେଭଲ୍'],
+  as: ['কাম আপোনাৰ ওচৰলৈ আহিব। টকা সেইদিনাই।','আপোনাৰ ভাষা বাছক','আৰু ভাষা','আগবাঢ়ক','আপোনাৰ মোবাইল নম্বৰ দিয়ক','OTP পঠিয়াওক','পিছলৈ','OTP দিয়ক','নিশ্চিত কৰক','আপুনি কি কাম কৰে?','কিমান বছৰৰ অভিজ্ঞতা','পৰৱৰ্তী','পৰিচয় আৰু পেমেণ্ট','কাম পোৱা আৰম্ভ কৰক','নমস্কাৰ','কামৰ বাবে উপলব্ধ','এতিয়া উপলব্ধ নহয়','এই মাহৰ উপাৰ্জন','নতুন কাম আহিছে','কাম চাওক','প্ৰতি দিন','দিন','কৈ কাম বিচাৰক','কাম','কামৰ বিৱৰণ','শুনক','হয়','নহয়','কাম পকা!',"ক'ত",'কেতিয়া','পালোঁগৈ','শ্বিফট চলি আছে','কাম শেষ','অনুমোদনৰ অপেক্ষা','টকা আপোনাৰ একাউণ্টত আহিছে','কাৰখানাক ৰেটিং দিয়ক','উপাৰ্জন',"স্কিল পাছপ'ৰ্ট",'হোম','আপোনাৰ পৰৱৰ্তী কাম','আজিৰ উপাৰ্জন','অসুবিধা? সহায় মাতক','পৰৱৰ্তী লেভেল'],
+  ur: ['کام آپ کے پاس آئے گا۔ پیسہ اسی دن۔','اپنی زبان چنیں','مزید زبانیں','آگے بڑھیں','اپنا موبائل نمبر ڈالیں','OTP بھیجیں','پیچھے','OTP ڈالیں','تصدیق کریں','آپ کیا کام کرتے ہیں؟','کتنے سال کا تجربہ','آگے','شناخت اور ادائیگی','کام حاصل کرنا شروع کریں','السلام علیکم','کام کے لیے دستیاب','ابھی دستیاب نہیں','اس مہینے کی کمائی','نیا کام آیا ہے','کام دیکھیں','فی دن','دن','بول کر کام ڈھونڈیں','کام','کام کی تفصیل','سنیں','ہاں','نہیں','کام پکا!','کہاں','کب','پہنچ گیا','شفٹ جاری ہے','کام مکمل','منظوری کا انتظار','پیسہ آپ کے اکاؤنٹ میں آ گیا','فیکٹری کو ریٹنگ دیں','کمائی','اسکل پاسپورٹ','ہوم','آپ کا اگلا کام','آج کی کمائی','کوئی مسئلہ؟ مدد بلائیں','اگلا لیول']
+};
+const LANG_NAMES = { en: ['English', 'EN'], hi: ['हिंदी', 'हिं'], bn: ['বাংলা', 'বাং'], mr: ['मराठी', 'मरा'], ta: ['தமிழ்', 'தமி'], te: ['తెలుగు', 'తెలు'], gu: ['ગુજરાતી', 'ગુજ'], kn: ['ಕನ್ನಡ', 'ಕನ್ನ'], ml: ['മലയാളം', 'മല'], pa: ['ਪੰਜਾਬੀ', 'ਪੰਜ'], or: ['ଓଡ଼ିଆ', 'ଓଡ଼ି'], as: ['অসমীয়া', 'অস'], ur: ['اردو', 'اردو'] };
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { screen: 'lang', onboarded: false, lang: 'hi', skills: { Welder: true }, seg: 'factory', pay: 'upi', agree: true, helpSent: '', exp: '3-5', kyc: false, available: true, jobId: 'j1', declined: {}, stage: 'none', myRating: 0, video: false, course: false };
+  }
+  renderVals() {
+    const st = this.state;
+    const s = st.screen;
+    const accent = this.props.accent ?? '#F5B301';
+    const fmt = (n) => Math.round(n).toLocaleString('en-IN');
+    const go = (screen) => () => this.setState({ screen });
+    const on = '#0E6B5C', off = '#6B756F';
+
+    const isEn = st.lang === 'en';
+    const loc = TR[st.lang] || TR.en;
+    const t = {}, l = {}, e = {};
+    KEYS.forEach((k, i) => {
+      const en = TR.en[i];
+      const lo = loc[i] || en;
+      l[k] = isEn ? en : lo;
+      e[k] = isEn ? '' : en;
+      t[k] = isEn ? en : lo + ' · ' + en;
+    });
+    const names = LANG_NAMES[st.lang] || LANG_NAMES.en;
+    const isMain = st.lang === 'en' || st.lang === 'hi';
+    const mainLangs = ['en', 'hi'].map((id) => ({ label: LANG_NAMES[id][0], border: st.lang === id ? '#0E6B5C' : '#DADDD3', mark: st.lang === id ? 'Selected' : '', pick: () => this.setState({ lang: id }) }));
+
+    const obOrder = ['lang', 'phone', 'otp', 'skill', 'verify'];
+    const obIdx = obOrder.indexOf(s);
+    const obSteps = obOrder.map((x, i) => ({ bg: i <= obIdx ? '#15211C' : '#DADDD3' }));
+
+    const segDefs = [
+      ['factory', 'Factory', ['Welder', 'Fitter', 'CNC Operator', 'Machine Helper', 'Packer', 'Electrician']],
+      ['construction', 'Construction', ['Mason', 'Mason Helper', 'Carpenter', 'Painter', 'Bar Bender', 'Plumber']],
+      ['loading', 'Loading and transport', ['Loader', 'Driver', 'Delivery Helper', 'Forklift Operator', 'Warehouse Packer', 'Warehouse Helper']],
+      ['office', 'Office and shop', ['Office Helper', 'Security Guard', 'Cleaner', 'Shop Helper', 'Pantry Staff', 'Maintenance']]
+    ];
+    const curSeg = segDefs.find((x) => x[0] === st.seg) || segDefs[0];
+    const segs = segDefs.map(([id, label]) => ({ label, bg: st.seg === id ? '#0E6B5C' : 'transparent', fg: st.seg === id ? '#FFFFFF' : '#15211C', pick: () => this.setState({ seg: id }) }));
+    const skillList = curSeg[2].map((label) => ({ id: label, label }));
+    const helpOpts = ['I have not been paid', 'The work is unsafe', 'I am asked to do different work', 'I am being treated badly'].map((label) => ({ label, pick: () => this.setState({ helpSent: label }) }));
+    const payOpts = [['upi', 'UPI'], ['bank', 'Bank account']].map(([id, label]) => ({ label, bg: st.pay === id ? '#15211C' : 'transparent', fg: st.pay === id ? '#FFFFFF' : '#15211C', pick: () => this.setState({ pay: id }) }));
+    const skillTiles = skillList.map((k) => {
+      const sel = !!st.skills[k.id];
+      return { ...k, bg: sel ? '#15211C' : '#FFFFFF', fg: sel ? '#FFFFFF' : '#15211C', border: sel ? '#15211C' : '#DADDD3', pick: () => this.setState({ skills: { ...st.skills, [k.id]: !sel } }) };
+    });
+    const chosen = Object.keys(st.skills).filter((k) => st.skills[k]);
+    const skillLine = chosen.length ? chosen.slice(0, 2).join(', ') : 'Welder';
+    const expOpts = [['1-2', '1–2 yrs'], ['3-5', '3–5 yrs'], ['5+', '5+ yrs']].map(([id, label]) => ({ label, bg: st.exp === id ? '#15211C' : 'transparent', fg: st.exp === id ? '#FFFFFF' : '#15211C', pick: () => this.setState({ exp: id }) }));
+
+    const jobs = [
+      { id: 'j1', title: 'Welding · Gate frames', factory: 'Bharat Steel Works', rate: 950, days: 5, dist: '2.4 km', dates: '18–22 Nov', time: '8 AM – 5 PM', area: 'Dankuni Industrial Area', gate: 'Gate 2 · Ask for Anil (supervisor)' },
+      { id: 'j2', title: 'Arc welding · Truck body', factory: 'Howrah Body Builders', rate: 1000, days: 2, dist: '4.1 km', dates: '19–20 Nov', time: '9 AM – 6 PM', area: 'Liluah, Howrah', gate: 'Main gate · Ask for Dipak (supervisor)' },
+      { id: 'j3', title: 'Welding · Storage racks', factory: 'Eastern Rack Co.', rate: 900, days: 8, dist: '6.3 km', dates: '24 Nov – 2 Dec', time: '8 AM – 5 PM', area: 'Uluberia Industrial Park', gate: 'Gate 1 · Ask for Imran (supervisor)' }
+    ];
+    const cur = jobs.find((j) => j.id === st.jobId) || jobs[0];
+    const hasJob = st.stage !== 'none';
+    const offers = jobs
+      .filter((j) => !st.declined[j.id] && !(hasJob && j.id === st.jobId))
+      .map((j, i) => ({ ...j, rateText: fmt(j.rate), border: i === 0 ? accent : '#DADDD3', open: () => this.setState({ viewId: j.id, screen: 'detail' }) }));
+    const view = s === 'detail' ? (jobs.find((j) => j.id === (st.viewId || st.jobId)) || cur) : cur;
+    const top = offers[0] || { title: '', factory: '', rateText: '', days: '', dist: '', open: go('jobs') };
+
+    const paid = st.stage === 'paid';
+    const month = 18400 + (paid ? cur.rate : 0);
+    const stageLabel = { booked: 'Confirmed', in: 'On shift', await: 'Waiting for approval', paid: 'Day 1 paid' }[st.stage] || '';
+    const stepIdx = { booked: 0, in: 1, await: 2, paid: 3 }[st.stage] ?? 0;
+    const shiftSteps = ['Check in', 'Work', 'Approval', 'Paid'].map((label, i) => ({ label, bg: i <= stepIdx ? '#0E6B5C' : '#DADDD3', fg: i <= stepIdx ? '#0A5246' : '#6B756F' }));
+
+    const payments = [
+      { place: 'Sen Engineering', date: '14 Nov', amt: '850' },
+      { place: 'Sen Engineering', date: '13 Nov', amt: '850' },
+      { place: 'Dankuni Fabricators', date: '11 Nov', amt: '900' },
+      { place: 'Dankuni Fabricators', date: '10 Nov', amt: '900' }
+    ];
+    if (paid) payments.unshift({ place: cur.factory, date: '18 Nov', amt: fmt(cur.rate) });
+
+    const stars = [1, 2, 3, 4, 5].map((n) => ({ label: 'Rate ' + n + ' out of 5', col: n <= st.myRating ? '#E0A200' : '#C9CEC4', pick: () => this.setState({ myRating: n }) }));
+
+    return {
+      accent, t, l, e,
+      isOnboarding: obIdx >= 0 && !st.onboarded,
+      obSteps,
+      isLang: s === 'lang', isPhone: s === 'phone', isOtp: s === 'otp', isSkill: s === 'skill', isVerify: s === 'verify',
+      isHome: s === 'home', isJobs: s === 'jobs', isDetail: s === 'detail', isConfirmed: s === 'confirmed', isShift: s === 'shift', isPaid: s === 'paid', isEarnings: s === 'earnings', isPassport: s === 'passport',
+      showNav: st.onboarded && s !== 'lang',
+      mainLangs,
+      moreValue: isMain ? '' : st.lang,
+      moreBorder: isMain ? '#DADDD3' : '#0E6B5C',
+      pickMore: (ev) => { const v = ev && ev.target ? ev.target.value : ''; if (v) this.setState({ lang: v }); },
+      showLine: isEn ? 'The app will be shown in English.' : 'The app will be shown in ' + names[0] + ' and English together.',
+      langShort: isEn ? 'EN' : names[1] + ' · EN',
+      afterLang: () => this.setState({ screen: st.onboarded ? 'home' : 'phone' }),
+      goLang: go('lang'), goPhone: go('phone'), goOtp: go('otp'), goSkill: go('skill'), goVerify: go('verify'),
+      skillTiles, segs, expOpts, skillLine, skillCount: chosen.length,
+      payOpts, isUpi: st.pay === 'upi', isBank: st.pay === 'bank',
+      payoutLabel: st.pay === 'bank' ? 'bank account' : 'UPI',
+      toggleAgree: () => this.setState({ agree: !st.agree }), agreeBg: st.agree ? '#0E6B5C' : '#FFFFFF',
+      isHelp: s === 'help', goHelp: () => this.setState({ screen: 'help', helpSent: '' }), backToShift: go('shift'),
+      helpOpts, helpOpen: !st.helpSent, helpDone: !!st.helpSent, helpSent: st.helpSent,
+      kycPending: !st.kyc, kycDone: st.kyc, doKyc: () => this.setState({ kyc: true }),
+      finishOnboarding: () => this.setState({ onboarded: true, kyc: true, screen: 'home' }),
+      goHome: go('home'), goJobs: go('jobs'), goEarnings: go('earnings'), goPassport: go('passport'),
+      goShift: () => this.setState({ screen: st.stage === 'paid' ? 'paid' : (hasJob ? 'shift' : 'jobs') }),
+      toggleAvail: () => this.setState({ available: !st.available }),
+      availBg: st.available ? '#0E6B5C' : '#B7BDB4', availAlign: st.available ? 'flex-end' : 'flex-start',
+      availTitle: st.available ? t.available : t.notAvailable,
+      availSub: st.available ? 'Employers can send you job offers' : 'You will not get new offers',
+      homeNone: st.stage === 'none', homeBooked: st.stage === 'booked', homeWorking: st.stage === 'in' || st.stage === 'await', homePaid: paid,
+      workingTitle: st.stage === 'await' ? t.waiting : t.onShift,
+      hasOffers: offers.length > 0, noOffers: offers.length === 0, offerCount: offers.length, offers, top,
+      hasJob, stageLabel,
+      monthText: fmt(month), daysWorked: 21 + (paid ? 1 : 0),
+      curTitle: view.title, curFactory: view.factory, curRateText: fmt(view.rate), curDays: view.days, curTotalText: fmt(view.rate * view.days),
+      curDist: view.dist, curDates: view.dates, curTime: view.time, curArea: view.area, curGate: view.gate,
+      canAccept: !hasJob, cantAccept: hasJob,
+      accept: () => this.setState({ jobId: view.id, stage: 'booked', screen: 'confirmed', myRating: 0 }),
+      decline: () => this.setState({ declined: { ...st.declined, [view.id]: true }, screen: 'jobs' }),
+      shiftSteps,
+      stNotIn: st.stage === 'booked', stIn: st.stage === 'in', stAwait: st.stage === 'await',
+      checkIn: () => this.setState({ stage: 'in' }),
+      checkOut: () => this.setState({ stage: 'await' }),
+      approve: () => this.setState({ stage: 'paid', screen: 'paid' }),
+      dayPlan: [
+        { n: '1', name: 'Checked in at the gate', time: '8:02 AM' },
+        { n: '2', name: 'Lunch break', time: '1:00 PM' },
+        { n: '3', name: 'Shift ends, check out', time: '5:00 PM' },
+        { n: '4', name: 'Money in your UPI', time: 'by 6 PM' }
+      ],
+      stars,
+      ratingNote: st.myRating ? 'Thanks. Your rating helps other workers.' : 'Tap a star. Your rating is shown to other workers.',
+      payments,
+      jobsDone: 18 + (paid ? 1 : 0),
+      proven: [
+        { name: 'Arc welding (MMA)', proof: 'Video checked · 12 jobs at 4 factories' },
+        { name: 'Gas cutting', proof: '5 jobs · rated 4.9' },
+        { name: 'Angle grinding and finishing', proof: '7 jobs · rated 4.7' }
+      ],
+      addVideo: () => this.setState({ video: true }),
+      videoBg: st.video ? '#E3F2EE' : 'transparent',
+      videoLabel: st.video ? 'Video added · under review' : 'Add a 30-second skill video',
+      askCourse: () => this.setState({ course: true }),
+      courseLabel: st.course ? 'Request sent · we will call you' : 'I am interested',
+      navHome: s === 'home' ? on : off,
+      navJobs: (s === 'jobs' || s === 'detail' || s === 'confirmed' || s === 'shift' || s === 'paid') ? on : off,
+      navEarn: s === 'earnings' ? on : off,
+      navPassport: s === 'passport' ? on : off
+    };
+  }
+}
+</script>
+</body>
+</html>

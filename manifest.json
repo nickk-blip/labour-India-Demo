@@ -1,0 +1,12 @@
+{
+  "name": "Labour India",
+  "short_name": "Labour India",
+  "description": "Verified workers for any job, paid automatically. Demo version.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#15211C",
+  "theme_color": "#15211C",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

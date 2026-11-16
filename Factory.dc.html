@@ -1,0 +1,750 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Employer app</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#0E6B5C}a:hover{color:#0A5246}
+button{font-family:inherit;cursor:pointer}
+input,select{font-family:inherit}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; background: #F3F4EF; color: #15211C; font-family: 'Mukta', system-ui, sans-serif; overflow: hidden">
+
+<div style="flex: 1; overflow-y: auto; padding: 20px 18px 16px; display: flex; flex-direction: column; gap: 16px">
+
+<sc-if value="{{isWelcome}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; flex-direction: column; gap: 16px; padding-top: 12px">
+  <div style="display: flex; justify-content: flex-end; margin-top: -8px">
+    <a href="Main.dc.html" style="height: 44px; padding: 0 12px; border-radius: 22px; border: 1px solid #B7BDB4; background: #FFFFFF; color: #15211C; display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 700; text-decoration: none">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h14l-4-4M20 16H6l4 4"></path></svg>
+      Worker login
+    </a>
+  </div>
+  <div style="width: 72px; height: 72px; border-radius: 20px; background: {{accent}}; color: #15211C; display: flex; align-items: center; justify-content: center">
+    <svg width="44" height="44" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 34h40M8 34V20M40 34V20M8 22c8 10 24 10 32 0M18 34v-7M24 34v-6M30 34v-7"></path></svg>
+  </div>
+  <div style="font-size: 34px; font-weight: 800; line-height: 1.1">Labour India<br>for Employers</div>
+  <div style="font-size: 18px; color: #56625B">Verified workers for factories, construction sites, warehouses, shops and offices.</div>
+  <div style="background: #FFFFFF; border-radius: 20px; padding: 6px 18px">
+    <div style="display: flex; gap: 12px; align-items: center; padding: 12px 0; border-bottom: 1px solid #E6E8E1"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0E6B5C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg><div style="font-size: 17px; font-weight: 700">ID-verified workers with proven skills</div></div>
+    <div style="display: flex; gap: 12px; align-items: center; padding: 12px 0; border-bottom: 1px solid #E6E8E1"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0E6B5C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg><div style="font-size: 17px; font-weight: 700">One worker or two hundred</div></div>
+    <div style="display: flex; gap: 12px; align-items: center; padding: 12px 0; border-bottom: 1px solid #E6E8E1"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0E6B5C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg><div style="font-size: 17px; font-weight: 700">Pay in the app, wages reach workers automatically</div></div>
+    <div style="display: flex; gap: 12px; align-items: center; padding: 12px 0"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0E6B5C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg><div style="font-size: 17px; font-weight: 700">Replacement if a worker leaves</div></div>
+  </div>
+  <button onClick="{{goCompany}}" style="height: 64px; border: none; border-radius: 20px; background: {{accent}}; color: #15211C; font-size: 20px; font-weight: 800">Create employer account</button>
+</div>
+</sc-if>
+
+<sc-if value="{{isCompany}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 12px; padding-top: 8px">
+  <div style="font-size: 26px; font-weight: 800; line-height: 1.2">Your account</div>
+  <label for="e-type" style="font-size: 15px; font-weight: 700">I am hiring as</label>
+  <select id="e-type" onChange="{{pickAcct}}" value="{{acct}}" style="height: 60px; border-radius: 16px; border: 3px solid #0E6B5C; background: #FFFFFF; color: #15211C; font-size: 18px; font-weight: 800; padding: 0 12px; margin-top: -6px">
+    <option value="manufacturer">Manufacturer or factory</option>
+    <option value="contractor">Contractor (bulk labour)</option>
+    <option value="business">Business: shop, office, warehouse</option>
+    <option value="personal">Personal: individual work</option>
+  </select>
+  <div style="background: #E3F2EE; color: #0A5246; border-radius: 14px; padding: 12px 14px; font-size: 15px; font-weight: 700">{{acctNote}}</div>
+
+  <sc-if value="{{isBiz}}" hint-placeholder-val="{{ true }}">
+  <div style="display: flex; flex-direction: column; gap: 12px">
+    <label for="e-name" style="font-size: 15px; font-weight: 700">{{nameLabel}}</label>
+    <input id="e-name" type="text" placeholder="{{namePh}}" style="height: 54px; border-radius: 14px; border: 2px solid #15211C; padding: 0 14px; font-size: 18px; font-weight: 700; color: #15211C; background: #FFFFFF; box-sizing: border-box; width: 100%; margin-top: -6px">
+    <label for="e-gst" style="font-size: 15px; font-weight: 700">GST number</label>
+    <div style="display: flex; gap: 8px; margin-top: -6px">
+      <input id="e-gst" type="text" placeholder="15-character GSTIN" style="flex: 1; min-width: 0; height: 54px; border-radius: 14px; border: 2px solid #15211C; padding: 0 14px; font-size: 18px; font-weight: 700; color: #15211C; background: #FFFFFF; box-sizing: border-box">
+      <button onClick="{{verifyId}}" style="height: 54px; padding: 0 16px; border-radius: 14px; border: none; background: #15211C; color: #FFFFFF; font-size: 16px; font-weight: 800">Verify</button>
+    </div>
+    <label for="e-loc" style="font-size: 15px; font-weight: 700">{{locLabel}}</label>
+    <input id="e-loc" type="text" placeholder="Area and city" style="height: 54px; border-radius: 14px; border: 2px solid #15211C; padding: 0 14px; font-size: 18px; font-weight: 700; color: #15211C; background: #FFFFFF; box-sizing: border-box; width: 100%; margin-top: -6px">
+  </div>
+  </sc-if>
+
+  <sc-if value="{{isPersonal}}" hint-placeholder-val="{{ false }}">
+  <div style="display: flex; flex-direction: column; gap: 12px">
+    <label for="e-pname" style="font-size: 15px; font-weight: 700">Your full name</label>
+    <input id="e-pname" type="text" placeholder="As on your Aadhaar" style="height: 54px; border-radius: 14px; border: 2px solid #15211C; padding: 0 14px; font-size: 18px; font-weight: 700; color: #15211C; background: #FFFFFF; box-sizing: border-box; width: 100%; margin-top: -6px">
+    <label for="e-addr" style="font-size: 15px; font-weight: 700">Address where work will be done</label>
+    <input id="e-addr" type="text" placeholder="House, street, area, city" style="height: 54px; border-radius: 14px; border: 2px solid #15211C; padding: 0 14px; font-size: 18px; font-weight: 700; color: #15211C; background: #FFFFFF; box-sizing: border-box; width: 100%; margin-top: -6px">
+    <button onClick="{{verifyId}}" style="height: 54px; border-radius: 14px; border: 2px solid #15211C; background: transparent; color: #15211C; font-size: 17px; font-weight: 800">Verify with Aadhaar OTP</button>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{idDone}}" hint-placeholder-val="{{ false }}">
+    <div style="display: flex; align-items: center; gap: 10px; background: #E3F2EE; color: #0A5246; border-radius: 14px; padding: 12px 14px; font-size: 16px; font-weight: 800">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg>
+      {{idDoneText}}
+    </div>
+  </sc-if>
+
+  <button onClick="{{toggleAgree}}" style="display: flex; align-items: center; gap: 12px; border: none; background: #FFFFFF; border-radius: 16px; padding: 12px 14px; text-align: left; color: #15211C">
+    <span style="width: 28px; height: 28px; border-radius: 8px; border: 2px solid #15211C; background: {{agreeBg}}; color: #FFFFFF; display: flex; align-items: center; justify-content: center; flex-shrink: 0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></span>
+    <span style="font-size: 15px; font-weight: 700">I accept the Labour India hiring terms: fair wages, a safe workplace and payment through the app.</span>
+  </button>
+  <button onClick="{{finishOnboarding}}" style="height: 64px; border: none; border-radius: 20px; background: {{accent}}; color: #15211C; font-size: 20px; font-weight: 800">Finish setup</button>
+</div>
+</sc-if>
+
+<sc-if value="{{isHome}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 12px">
+  <div style="display: flex; flex-direction: column; gap: 4px">
+    <label for="e-switch" style="font-size: 14px; font-weight: 700; color: #0E6B5C">Hiring as</label>
+    <select id="e-switch" onChange="{{pickAcct}}" value="{{acct}}" style="height: 48px; border-radius: 14px; border: 2px solid #15211C; background: #FFFFFF; color: #15211C; font-size: 16px; font-weight: 800; padding: 0 10px">
+      <option value="manufacturer">Manufacturer · Bharat Steel Works</option>
+      <option value="contractor">Contractor · bulk labour</option>
+      <option value="business">Business · shop, office, warehouse</option>
+      <option value="personal">Personal · individual</option>
+    </select>
+  </div>
+  <div style="font-size: 24px; font-weight: 800; line-height: 1.15">What work do you need done?</div>
+  <div style="display: flex; flex-wrap: wrap; gap: 8px">
+    <sc-for list="{{segs}}" as="g" hint-placeholder-count="6">
+      <button onClick="{{g.pick}}" style="height: 44px; padding: 0 13px; border-radius: 22px; border: 2px solid #15211C; background: {{g.bg}}; color: {{g.fg}}; font-size: 15px; font-weight: 700">{{g.label}}</button>
+    </sc-for>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+    <sc-for list="{{skills}}" as="sk" hint-placeholder-count="6">
+      <button onClick="{{sk.pick}}" style="height: 76px; border-radius: 16px; border: 2px solid {{sk.border}}; background: {{sk.bg}}; color: {{sk.fg}}; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2px 4px">
+        <span style="font-size: 15px; font-weight: 800; line-height: 1.15">{{sk.label}}</span>
+        <span style="font-size: 13px">₹{{sk.rateText}}/day</span>
+      </button>
+    </sc-for>
+  </div>
+  <div style="background: #FFFFFF; border-radius: 20px; padding: 14px 16px; display: flex; flex-direction: column; gap: 14px">
+    <div style="display: flex; align-items: center; justify-content: space-between">
+      <div><div style="font-size: 17px; font-weight: 700">How many workers?</div><div style="font-size: 13px; color: #56625B">{{countHint}}</div></div>
+      <div style="display: flex; align-items: center; gap: 10px">
+        <button onClick="{{dec}}" aria-label="Fewer workers" style="width: 48px; height: 48px; border-radius: 24px; border: 2px solid #15211C; background: transparent; font-size: 26px; font-weight: 700; color: #15211C; line-height: 1">−</button>
+        <span style="font-size: 30px; font-weight: 800; min-width: 44px; text-align: center">{{count}}</span>
+        <button onClick="{{inc}}" aria-label="More workers" style="width: 48px; height: 48px; border-radius: 24px; border: none; background: #15211C; font-size: 26px; font-weight: 700; color: #FFFFFF; line-height: 1">+</button>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 8px">
+      <div style="font-size: 17px; font-weight: 700">For how long?</div>
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+        <sc-for list="{{dayOpts}}" as="d" hint-placeholder-count="3">
+          <button onClick="{{d.pick}}" style="height: 46px; border-radius: 23px; border: 2px solid #15211C; background: {{d.bg}}; color: {{d.fg}}; font-size: 16px; font-weight: 700">{{d.label}}</button>
+        </sc-for>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 8px">
+      <div style="font-size: 17px; font-weight: 700">Starting</div>
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+        <sc-for list="{{startOpts}}" as="d" hint-placeholder-count="3">
+          <button onClick="{{d.pick}}" style="height: 46px; border-radius: 23px; border: 2px solid #15211C; background: {{d.bg}}; color: {{d.fg}}; font-size: 16px; font-weight: 700">{{d.label}}</button>
+        </sc-for>
+      </div>
+    </div>
+    <sc-if value="{{bulk}}" hint-placeholder-val="{{ false }}">
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <label for="e-site" style="font-size: 17px; font-weight: 700">Which site?</label>
+        <select id="e-site" onChange="{{pickSite}}" value="{{site}}" style="height: 48px; border-radius: 14px; border: 2px solid #15211C; background: #FFFFFF; color: #15211C; font-size: 16px; font-weight: 700; padding: 0 10px">
+          <option value="Site A · Rajarhat housing project">Site A · Rajarhat housing project</option>
+          <option value="Site B · Howrah warehouse">Site B · Howrah warehouse</option>
+          <option value="Site C · Salt Lake office block">Site C · Salt Lake office block</option>
+        </select>
+      </div>
+    </sc-if>
+  </div>
+  <button onClick="{{goResults}}" style="min-height: 64px; border: none; border-radius: 20px; background: {{accent}}; color: #15211C; font-size: 19px; font-weight: 800; padding: 6px 12px">Find {{count}} × {{skillLabel}}</button>
+</div>
+</sc-if>
+
+<sc-if value="{{isResults}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 12px">
+  <div style="display: flex; align-items: center; gap: 10px">
+    <button onClick="{{goHome}}" aria-label="Back" style="width: 48px; height: 48px; border-radius: 24px; border: none; background: #FFFFFF; color: #15211C; display: flex; align-items: center; justify-content: center; flex-shrink: 0">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg>
+    </button>
+    <div>
+      <div style="font-size: 20px; font-weight: 800; line-height: 1.1">6 available · {{skillLabel}}</div>
+      <div style="font-size: 14px; color: #56625B">Best matches are selected for you. Change if you like.</div>
+    </div>
+  </div>
+  <sc-for list="{{pool}}" as="w" hint-placeholder-count="4">
+    <div style="background: #FFFFFF; border-radius: 20px; padding: 14px; display: flex; flex-direction: column; gap: 10px; border: 2px solid {{w.border}}">
+      <div style="display: flex; align-items: center; gap: 12px">
+        <div style="width: 48px; height: 48px; border-radius: 14px; background: #15211C; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800">{{w.initial}}</div>
+        <div style="flex: 1">
+          <div style="font-size: 18px; font-weight: 800; line-height: 1.15">{{w.name}}</div>
+          <div style="font-size: 14px; color: #56625B">{{w.level}} · {{w.distance}}</div>
+        </div>
+        <div style="text-align: right"><div style="font-size: 20px; font-weight: 800; line-height: 1">{{w.rating}}</div><div style="font-size: 12px; color: #56625B">rating</div></div>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 8px">
+        <span style="font-size: 14px; font-weight: 700; background: #E3F2EE; color: #0A5246; padding: 4px 10px; border-radius: 10px">{{w.jobs}} verified jobs</span>
+        <span style="font-size: 14px; font-weight: 700; background: #E3F2EE; color: #0A5246; padding: 4px 10px; border-radius: 10px">{{w.showup}} show-up</span>
+        <span style="font-size: 14px; font-weight: 700; background: #F3F4EF; padding: 4px 10px; border-radius: 10px">ID verified</span>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+        <button onClick="{{w.view}}" style="height: 46px; border-radius: 12px; border: 2px solid #15211C; background: transparent; color: #15211C; font-size: 15px; font-weight: 800">View passport</button>
+        <button onClick="{{w.toggle}}" style="height: 46px; border-radius: 12px; border: 2px solid {{w.selBorder}}; background: {{w.selBg}}; color: {{w.selFg}}; font-size: 15px; font-weight: 800">{{w.selLabel}}</button>
+      </div>
+    </div>
+  </sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{isBulk}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 12px">
+  <div style="display: flex; align-items: center; gap: 10px">
+    <button onClick="{{goHome}}" aria-label="Back" style="width: 48px; height: 48px; border-radius: 24px; border: none; background: #FFFFFF; color: #15211C; display: flex; align-items: center; justify-content: center; flex-shrink: 0">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg>
+    </button>
+    <div><div style="font-size: 20px; font-weight: 800; line-height: 1.1">Bulk match</div><div style="font-size: 14px; color: #56625B">{{site}}</div></div>
+  </div>
+  <div style="background: #0E6B5C; color: #FFFFFF; border-radius: 22px; padding: 18px 20px">
+    <div style="font-size: 44px; font-weight: 800; line-height: 1.1">{{count}} / {{count}}</div>
+    <div style="font-size: 17px; font-weight: 700">{{skillLabel}} matched for {{start}}</div>
+    <div style="font-size: 15px; margin-top: 4px">Plus {{standby}} on standby in case someone does not come</div>
+  </div>
+  <div style="background: #FFFFFF; border-radius: 20px; padding: 4px 16px">
+    <sc-for list="{{levels}}" as="lv" hint-placeholder-count="3">
+      <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #E6E8E1">
+        <div><div style="font-size: 17px; font-weight: 700">{{lv.name}}</div><div style="font-size: 14px; color: #56625B">{{lv.note}}</div></div>
+        <div style="font-size: 22px; font-weight: 800">{{lv.n}}</div>
+      </div>
+    </sc-for>
+  </div>
+  <div style="background: #FFFFFF; border-radius: 20px; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px">
+    <div style="font-size: 15px; font-weight: 700; color: #56625B">Every worker in this batch</div>
+    <div style="display: flex; flex-wrap: wrap; gap: 8px">
+      <span style="font-size: 14px; font-weight: 700; background: #E3F2EE; color: #0A5246; padding: 4px 10px; border-radius: 10px">ID verified</span>
+      <span style="font-size: 14px; font-weight: 700; background: #E3F2EE; color: #0A5246; padding: 4px 10px; border-radius: 10px">Rated 4.0 or higher</span>
+      <span style="font-size: 14px; font-weight: 700; background: #E3F2EE; color: #0A5246; padding: 4px 10px; border-radius: 10px">Within 8 km of site</span>
+    </div>
+  </div>
+  <button onClick="{{goConfirm}}" style="height: 64px; border: none; border-radius: 20px; background: {{accent}}; color: #15211C; font-size: 19px; font-weight: 800">Continue with {{count}} workers</button>
+</div>
+</sc-if>
+
+<sc-if value="{{isProfile}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 12px">
+  <div style="display: flex; align-items: center; gap: 10px">
+    <button onClick="{{backToResults}}" aria-label="Back" style="width: 48px; height: 48px; border-radius: 24px; border: none; background: #FFFFFF; color: #15211C; display: flex; align-items: center; justify-content: center">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg>
+    </button>
+    <div style="font-size: 20px; font-weight: 800">Skill Passport</div>
+  </div>
+  <div style="background: #15211C; color: #FFFFFF; border-radius: 22px; padding: 18px; display: flex; flex-direction: column; gap: 14px">
+    <div style="display: flex; gap: 14px; align-items: center">
+      <div style="width: 60px; height: 60px; border-radius: 16px; background: {{accent}}; color: #15211C; display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 800">{{pv.initial}}</div>
+      <div><div style="font-size: 22px; font-weight: 800; line-height: 1.1">{{pv.name}}</div><div style="font-size: 15px; color: #C9D2CC">{{skillLabel}} · {{pv.level}} · {{pv.distance}}</div></div>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+      <div><div style="font-size: 26px; font-weight: 800">{{pv.jobs}}</div><div style="font-size: 13px; color: #C9D2CC">verified jobs</div></div>
+      <div><div style="font-size: 26px; font-weight: 800">{{pv.rating}}</div><div style="font-size: 13px; color: #C9D2CC">rating</div></div>
+      <div><div style="font-size: 26px; font-weight: 800">{{pv.showup}}</div><div style="font-size: 13px; color: #C9D2CC">showed up</div></div>
+    </div>
+  </div>
+  <div style="background: #FFFFFF; border-radius: 20px; padding: 4px 16px">
+    <div style="display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #E6E8E1"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0E6B5C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg><div><div style="font-size: 17px; font-weight: 700">Aadhaar ID verified</div><div style="font-size: 14px; color: #56625B">Identity confirmed at sign-up</div></div></div>
+    <div style="display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #E6E8E1"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0E6B5C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg><div><div style="font-size: 17px; font-weight: 700">Police verification on file</div><div style="font-size: 14px; color: #56625B">Certificate uploaded and checked</div></div></div>
+    <div style="display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #E6E8E1"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0E6B5C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg><div><div style="font-size: 17px; font-weight: 700">Skill video checked</div><div style="font-size: 14px; color: #56625B">30-second work sample reviewed by Labour India</div></div></div>
+    <div style="display: flex; align-items: center; gap: 12px; padding: 12px 0"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0E6B5C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg><div><div style="font-size: 17px; font-weight: 700">No complaints recorded</div><div style="font-size: 14px; color: #56625B">Reports from employers appear here</div></div></div>
+  </div>
+  <div style="background: #FFFFFF; border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 4px">
+    <div style="font-size: 14px; color: #56625B">Latest employer comment</div>
+    <div style="font-size: 17px; font-weight: 700">“{{pv.quote}}”</div>
+  </div>
+  <button onClick="{{pv.toggle}}" style="height: 60px; border-radius: 18px; border: 2px solid {{pv.selBorder}}; background: {{pv.selBg}}; color: {{pv.selFg}}; font-size: 19px; font-weight: 800">{{pv.selLabelLong}}</button>
+</div>
+</sc-if>
+
+<sc-if value="{{isConfirm}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 12px">
+  <div style="display: flex; align-items: center; gap: 10px">
+    <button onClick="{{backToResults}}" aria-label="Back" style="width: 48px; height: 48px; border-radius: 24px; border: none; background: #FFFFFF; color: #15211C; display: flex; align-items: center; justify-content: center">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg>
+    </button>
+    <div style="font-size: 20px; font-weight: 800">Review and pay</div>
+  </div>
+  <div style="background: #FFFFFF; border-radius: 22px; padding: 16px 18px; display: flex; flex-direction: column; gap: 9px">
+    <div style="font-size: 19px; font-weight: 800">{{n}} × {{skillLabel}}</div>
+    <div style="font-size: 15px; color: #56625B">{{whoLine}}</div>
+    <div style="font-size: 15px; color: #56625B">From {{start}} · {{days}} days · 8 AM – 5 PM</div>
+    <div style="height: 1px; background: #E6E8E1"></div>
+    <div style="display: flex; justify-content: space-between; font-size: 16px"><span>Wages ({{shifts}} shifts × ₹{{rateText}})</span><span style="font-weight: 700">₹{{wagesText}}</span></div>
+    <div style="display: flex; justify-content: space-between; font-size: 16px"><span>Shift insurance</span><span style="font-weight: 700">₹{{insText}}</span></div>
+    <div style="display: flex; justify-content: space-between; font-size: 16px"><span>Service fee (10%)</span><span style="font-weight: 700">₹{{feeText}}</span></div>
+    <div style="height: 1px; background: #E6E8E1"></div>
+    <div style="display: flex; justify-content: space-between; font-size: 20px; font-weight: 800"><span>Pay now</span><span>₹{{totalText}}</span></div>
+  </div>
+  <div style="background: #15211C; color: #FFFFFF; border-radius: 22px; padding: 16px 18px; display: flex; flex-direction: column; gap: 8px">
+    <div style="font-size: 17px; font-weight: 800; color: {{accent}}">How your money is protected</div>
+    <div style="font-size: 15px">1. Your payment is held safely, not given to anyone yet.</div>
+    <div style="font-size: 15px">2. After each shift you approve, that day's wage goes straight to each worker's bank account.</div>
+    <div style="font-size: 15px">3. Absent workers and cancelled days are refunded to you.</div>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+    <sc-for list="{{payOpts}}" as="p" hint-placeholder-count="3">
+      <button onClick="{{p.pick}}" style="height: 46px; border-radius: 23px; border: 2px solid #15211C; background: {{p.bg}}; color: {{p.fg}}; font-size: 15px; font-weight: 700">{{p.label}}</button>
+    </sc-for>
+  </div>
+  <button onClick="{{sendRequest}}" style="height: 64px; border: none; border-radius: 20px; background: {{accent}}; color: #15211C; font-size: 20px; font-weight: 800">Pay ₹{{totalText}} securely</button>
+  <div style="font-size: 14px; color: #56625B; text-align: center">A work agreement is created for each worker and accepted by OTP.</div>
+</div>
+</sc-if>
+
+<sc-if value="{{isSent}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 14px">
+  <div style="display: flex; align-items: center; gap: 10px; background: #E3F2EE; color: #0A5246; border-radius: 14px; padding: 12px 14px; font-size: 16px; font-weight: 800">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg>
+    ₹{{bk.totalText}} received and held safely
+  </div>
+  <div>
+    <div style="font-size: 14px; font-weight: 700; color: #0E6B5C">Booking LI-2041 · from {{bk.start}} · {{bk.days}} days</div>
+    <div style="font-size: 24px; font-weight: 800; line-height: 1.15">{{sentTitle}}</div>
+    <div style="font-size: 15px; color: #56625B">{{sentSub}}</div>
+  </div>
+  <div style="background: #FFFFFF; border-radius: 20px; padding: 4px 16px">
+    <sc-for list="{{bkWorkers}}" as="w" hint-placeholder-count="4">
+      <div style="display: flex; align-items: center; gap: 12px; padding: 11px 0; border-bottom: 1px solid #E6E8E1">
+        <div style="width: 40px; height: 40px; border-radius: 20px; background: #F3F4EF; display: flex; align-items: center; justify-content: center; font-weight: 800">{{w.initial}}</div>
+        <div style="flex: 1"><div style="font-size: 17px; font-weight: 700">{{w.name}}</div><div style="font-size: 13px; color: #56625B">{{w.level}}</div></div>
+        <span style="font-size: 14px; font-weight: 800; padding: 4px 10px; border-radius: 10px; background: {{w.stBg}}; color: {{w.stFg}}">{{w.stLabel}}</span>
+      </div>
+    </sc-for>
+    <sc-if value="{{hasMore}}" hint-placeholder-val="{{ false }}">
+      <div style="padding: 11px 0; font-size: 15px; color: #56625B">+ {{moreCount}} more workers</div>
+    </sc-if>
+  </div>
+  <sc-if value="{{notAccepted}}" hint-placeholder-val="{{ true }}">
+    <button onClick="{{allAccept}}" style="height: 60px; border: none; border-radius: 18px; background: #15211C; color: #FFFFFF; font-size: 18px; font-weight: 800">All workers accept (demo)</button>
+  </sc-if>
+  <sc-if value="{{isAccepted}}" hint-placeholder-val="{{ false }}">
+    <button onClick="{{goLive}}" style="height: 60px; border: none; border-radius: 18px; background: {{accent}}; color: #15211C; font-size: 18px; font-weight: 800">Go to the first day (demo)</button>
+  </sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{isBookings}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 12px">
+  <div style="font-size: 24px; font-weight: 800">Bookings</div>
+  <sc-if value="{{hasBooking}}" hint-placeholder-val="{{ false }}">
+    <button onClick="{{openBooking}}" style="border: none; background: #15211C; color: #FFFFFF; border-radius: 20px; padding: 16px; text-align: left; display: flex; flex-direction: column; gap: 4px">
+      <span style="font-size: 14px; font-weight: 800; color: {{accent}}; letter-spacing: .04em">{{bkStatus}}</span>
+      <span style="font-size: 20px; font-weight: 800; line-height: 1.2">{{bk.n}} × {{bk.skill}}</span>
+      <span style="font-size: 15px; color: #C9D2CC">{{bk.where}} · from {{bk.start}} · {{bk.days}} days</span>
+    </button>
+  </sc-if>
+  <sc-if value="{{noBooking}}" hint-placeholder-val="{{ true }}">
+    <div style="background: #FFFFFF; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 12px; text-align: center">
+      <div style="font-size: 17px; font-weight: 700">No active bookings</div>
+      <div style="font-size: 15px; color: #56625B">Book workers and they will appear here with live attendance.</div>
+      <button onClick="{{goHome}}" style="height: 52px; border: none; border-radius: 16px; background: {{accent}}; color: #15211C; font-size: 17px; font-weight: 800">Hire workers</button>
+    </div>
+  </sc-if>
+  <div style="font-size: 17px; font-weight: 700; color: #56625B; margin-top: 4px">Completed</div>
+  <div style="background: #FFFFFF; border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 4px">
+    <div style="font-size: 18px; font-weight: 800">2 × Fitter · 3 days</div>
+    <div style="font-size: 15px; color: #56625B">4–6 Nov · all shifts approved and paid</div>
+    <button onClick="{{goHome}}" style="height: 46px; border-radius: 12px; border: 2px solid #15211C; background: transparent; color: #15211C; font-size: 15px; font-weight: 800; margin-top: 8px">Book the same workers again</button>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{isLive}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 12px">
+  <div>
+    <div style="font-size: 14px; font-weight: 700; color: #0E6B5C">Today · Day 1 of {{bk.days}} · {{bk.where}}</div>
+    <div style="font-size: 24px; font-weight: 800; line-height: 1.15">{{bk.n}} × {{bk.skill}}</div>
+  </div>
+  <div style="background: {{liveBg}}; color: #FFFFFF; border-radius: 22px; padding: 16px 20px">
+    <div style="font-size: 38px; font-weight: 800; line-height: 1">{{present}}/{{bk.n}}</div>
+    <div style="font-size: 15px">{{liveNote}}</div>
+  </div>
+  <div style="background: #FFFFFF; border-radius: 20px; padding: 4px 16px">
+    <sc-for list="{{bkWorkers}}" as="w" hint-placeholder-count="4">
+      <div style="display: flex; align-items: center; gap: 12px; padding: 11px 0; border-bottom: 1px solid #E6E8E1">
+        <div style="width: 40px; height: 40px; border-radius: 20px; background: #F3F4EF; display: flex; align-items: center; justify-content: center; font-weight: 800">{{w.initial}}</div>
+        <div style="flex: 1"><div style="font-size: 17px; font-weight: 700">{{w.name}}</div><div style="font-size: 13px; color: #56625B">{{w.liveNote}}</div></div>
+        <span style="font-size: 14px; font-weight: 700; color: #0E6B5C">{{w.time}}</span>
+      </div>
+    </sc-for>
+    <sc-if value="{{hasMore}}" hint-placeholder-val="{{ false }}">
+      <div style="padding: 11px 0; font-size: 15px; color: #56625B">+ {{moreCount}} more workers</div>
+    </sc-if>
+  </div>
+  <sc-if value="{{notApproved}}" hint-placeholder-val="{{ true }}">
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <sc-if value="{{needsBulkFix}}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{fixAbsent}}" style="height: 60px; border: none; border-radius: 18px; background: #15211C; color: #FFFFFF; font-size: 18px; font-weight: 800">Replace 2 absent workers now</button>
+      </sc-if>
+      <button onClick="{{goApprove}}" style="height: 64px; border: none; border-radius: 20px; background: {{accent}}; color: #15211C; font-size: 19px; font-weight: 800">{{approveLabel}}</button>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+        <button onClick="{{goReplace}}" style="min-height: 52px; border-radius: 14px; border: 2px solid #15211C; background: transparent; color: #15211C; font-size: 15px; font-weight: 800; padding: 4px 8px">A worker left</button>
+        <button onClick="{{goIssue}}" style="min-height: 52px; border-radius: 14px; border: 2px solid #B3261E; background: transparent; color: #B3261E; font-size: 15px; font-weight: 800; padding: 4px 8px">Report a problem</button>
+      </div>
+    </div>
+  </sc-if>
+  <sc-if value="{{isApproved}}" hint-placeholder-val="{{ false }}">
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <div style="background: #FFFFFF; border: 2px solid #0E6B5C; border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 6px">
+        <div style="font-size: 18px; font-weight: 800; color: #0A5246">Day 1 approved</div>
+        <div style="font-size: 15px; color: #3C4842">₹{{dayWagesText}} was sent automatically to {{bk.n}} workers' bank accounts. You did not have to pay anyone by hand.</div>
+      </div>
+      <button onClick="{{goPayments}}" style="height: 56px; border-radius: 16px; border: 2px solid #15211C; background: transparent; color: #15211C; font-size: 17px; font-weight: 800">View payments</button>
+    </div>
+  </sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{isReplace}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 12px">
+  <div style="display: flex; align-items: center; gap: 10px">
+    <button onClick="{{goLive}}" aria-label="Back" style="width: 48px; height: 48px; border-radius: 24px; border: none; background: #FFFFFF; color: #15211C; display: flex; align-items: center; justify-content: center; flex-shrink: 0">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg>
+    </button>
+    <div><div style="font-size: 20px; font-weight: 800; line-height: 1.1">Replace a worker</div><div style="font-size: 14px; color: #56625B">Who left or did not come?</div></div>
+  </div>
+  <sc-if value="{{noSwap}}" hint-placeholder-val="{{ true }}">
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <sc-for list="{{bkWorkers}}" as="w" hint-placeholder-count="4">
+        <div style="background: #FFFFFF; border-radius: 18px; padding: 12px 14px; display: flex; align-items: center; gap: 12px">
+          <div style="flex: 1"><div style="font-size: 17px; font-weight: 800">{{w.name}}</div><div style="font-size: 13px; color: #56625B">{{w.level}}</div></div>
+          <button onClick="{{w.replace}}" style="height: 46px; padding: 0 16px; border-radius: 12px; border: none; background: #15211C; color: #FFFFFF; font-size: 15px; font-weight: 800">Replace</button>
+        </div>
+      </sc-for>
+      <div style="font-size: 14px; color: #56625B">Available workers with the same skill near you are alerted at once. You pay the worker who left only for the time worked.</div>
+    </div>
+  </sc-if>
+  <sc-if value="{{hasSwap}}" hint-placeholder-val="{{ false }}">
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <div style="background: #0E6B5C; color: #FFFFFF; border-radius: 22px; padding: 18px; display: flex; flex-direction: column; gap: 6px">
+        <div style="font-size: 14px; font-weight: 800; letter-spacing: .04em">REPLACEMENT CONFIRMED</div>
+        <div style="font-size: 24px; font-weight: 800; line-height: 1.15">{{swapIn.name}}</div>
+        <div style="font-size: 15px">{{swapIn.level}} · rated {{swapIn.rating}} · {{swapIn.distance}} away</div>
+        <div style="font-size: 17px; font-weight: 700; margin-top: 4px">On the way. Arrives by 9:40 AM.</div>
+      </div>
+      <div style="background: #FFFFFF; border-radius: 18px; padding: 14px 16px; font-size: 15px; color: #3C4842">{{swapOutName}} is marked absent. Their show-up score is reduced and their unworked pay goes to the replacement.</div>
+      <button onClick="{{goLive}}" style="height: 60px; border: none; border-radius: 18px; background: {{accent}}; color: #15211C; font-size: 18px; font-weight: 800">Back to attendance</button>
+    </div>
+  </sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{isIssue}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 12px">
+  <div style="display: flex; align-items: center; gap: 10px">
+    <button onClick="{{goLive}}" aria-label="Back" style="width: 48px; height: 48px; border-radius: 24px; border: none; background: #FFFFFF; color: #15211C; display: flex; align-items: center; justify-content: center; flex-shrink: 0">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg>
+    </button>
+    <div><div style="font-size: 20px; font-weight: 800; line-height: 1.1">Report a problem</div><div style="font-size: 14px; color: #56625B">Pay for this shift is held until it is settled</div></div>
+  </div>
+  <sc-if value="{{issueOpen}}" hint-placeholder-val="{{ true }}">
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <sc-for list="{{issueOpts}}" as="i" hint-placeholder-count="4">
+        <button onClick="{{i.pick}}" style="min-height: 56px; border-radius: 16px; border: 2px solid {{i.border}}; background: {{i.bg}}; color: {{i.fg}}; font-size: 17px; font-weight: 800; text-align: left; padding: 8px 16px">{{i.label}}</button>
+      </sc-for>
+      <sc-if value="{{issuePicked}}" hint-placeholder-val="{{ false }}">
+        <div style="display: flex; flex-direction: column; gap: 10px">
+          <div style="background: #FFF4CC; border-radius: 18px; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px">
+            <div style="font-size: 16px; font-weight: 800">What happens next</div>
+            <sc-for list="{{issueSteps}}" as="x" hint-placeholder-count="3">
+              <div style="font-size: 15px; color: #3D3A2E">{{x.text}}</div>
+            </sc-for>
+          </div>
+          <button style="height: 50px; border-radius: 14px; border: 2px solid #15211C; background: transparent; color: #15211C; font-size: 16px; font-weight: 700">Add photos as proof</button>
+          <button onClick="{{sendIssue}}" style="height: 60px; border: none; border-radius: 18px; background: #B3261E; color: #FFFFFF; font-size: 18px; font-weight: 800">Submit report</button>
+        </div>
+      </sc-if>
+    </div>
+  </sc-if>
+  <sc-if value="{{issueDone}}" hint-placeholder-val="{{ false }}">
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <div style="background: #E3F2EE; color: #0A5246; border-radius: 18px; padding: 16px; display: flex; flex-direction: column; gap: 6px">
+        <div style="font-size: 18px; font-weight: 800">Case LI-C-318 opened</div>
+        <div style="font-size: 15px; font-weight: 700">{{issueLabel}}</div>
+        <div style="font-size: 15px">Pay for this shift is on hold. Our support team will call you and the worker, and you will see the decision here.</div>
+      </div>
+      <button onClick="{{goLive}}" style="height: 60px; border: none; border-radius: 18px; background: {{accent}}; color: #15211C; font-size: 18px; font-weight: 800">Back to attendance</button>
+    </div>
+  </sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{isRate}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 12px">
+  <div style="display: flex; align-items: center; gap: 10px">
+    <button onClick="{{goLive}}" aria-label="Back" style="width: 48px; height: 48px; border-radius: 24px; border: none; background: #FFFFFF; color: #15211C; display: flex; align-items: center; justify-content: center">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg>
+    </button>
+    <div><div style="font-size: 20px; font-weight: 800; line-height: 1.1">Approve today's shift</div><div style="font-size: 14px; color: #56625B">How was each worker's work?</div></div>
+  </div>
+  <sc-for list="{{bkWorkers}}" as="w" hint-placeholder-count="4">
+    <div style="background: #FFFFFF; border-radius: 18px; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px">
+      <div style="font-size: 17px; font-weight: 800">{{w.name}}</div>
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+        <button onClick="{{w.ratePoor}}" style="height: 44px; border-radius: 12px; border: 2px solid #15211C; background: {{w.poorBg}}; color: {{w.poorFg}}; font-size: 15px; font-weight: 800">Poor</button>
+        <button onClick="{{w.rateOk}}" style="height: 44px; border-radius: 12px; border: 2px solid #15211C; background: {{w.okBg}}; color: {{w.okFg}}; font-size: 15px; font-weight: 800">Good</button>
+        <button onClick="{{w.rateGreat}}" style="height: 44px; border-radius: 12px; border: 2px solid #15211C; background: {{w.greatBg}}; color: {{w.greatFg}}; font-size: 15px; font-weight: 800">Excellent</button>
+      </div>
+    </div>
+  </sc-for>
+  <sc-if value="{{hasMore}}" hint-placeholder-val="{{ false }}">
+    <div style="font-size: 15px; color: #56625B; text-align: center">+ {{moreCount}} more workers will be marked Good. You can change any rating later.</div>
+  </sc-if>
+  <button onClick="{{approve}}" style="min-height: 64px; border: none; border-radius: 20px; background: {{accent}}; color: #15211C; font-size: 18px; font-weight: 800; padding: 6px 12px">Approve and release ₹{{dayWagesText}}</button>
+  <div style="font-size: 14px; color: #56625B; text-align: center">Approving sends today's wage to every worker's account in one step.</div>
+</div>
+</sc-if>
+
+<sc-if value="{{isPayments}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 14px">
+  <div style="font-size: 24px; font-weight: 800">Payments</div>
+  <div style="background: #15211C; color: #FFFFFF; border-radius: 22px; padding: 18px 20px">
+    <div style="font-size: 16px; color: #C9D2CC">Held safely for your booking</div>
+    <div style="font-size: 44px; font-weight: 800; line-height: 1.15">₹{{heldText}}</div>
+    <div style="font-size: 15px; color: #8FE0CC; font-weight: 700">Released only for shifts you approve</div>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+    <div style="background: #FFFFFF; border-radius: 18px; padding: 14px"><div style="font-size: 14px; color: #56625B">You paid in</div><div style="font-size: 24px; font-weight: 800">₹{{paidInText}}</div></div>
+    <div style="background: #FFFFFF; border-radius: 18px; padding: 14px"><div style="font-size: 14px; color: #56625B">Sent to workers</div><div style="font-size: 24px; font-weight: 800">₹{{releasedText}}</div></div>
+  </div>
+  <div style="background: #FFFFFF; border-radius: 20px; padding: 4px 16px">
+    <sc-for list="{{payLines}}" as="l" hint-placeholder-count="2">
+      <div style="display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #E6E8E1">
+        <div style="flex: 1"><div style="font-size: 17px; font-weight: 700">{{l.title}}</div><div style="font-size: 14px; color: #56625B">{{l.sub}}</div></div>
+        <div style="font-size: 17px; font-weight: 800">₹{{l.amt}}</div>
+      </div>
+    </sc-for>
+  </div>
+  <button style="height: 52px; border-radius: 16px; border: 2px solid #15211C; background: transparent; color: #15211C; font-size: 16px; font-weight: 700">Download GST invoice (PDF)</button>
+</div>
+</sc-if>
+
+</div>
+
+<sc-if value="{{showBar}}" hint-placeholder-val="{{ false }}">
+<div style="flex-shrink: 0; background: #FFFFFF; border-top: 1px solid #DADDD3; padding: 12px 18px; display: flex; align-items: center; gap: 12px">
+  <div style="flex: 1"><div style="font-size: 18px; font-weight: 800; line-height: 1.1">{{selCount}} of {{count}} selected</div><div style="font-size: 13px; color: #56625B">₹{{rateText}}/day each</div></div>
+  <button onClick="{{goConfirm}}" style="height: 54px; padding: 0 22px; border: none; border-radius: 16px; background: {{barBg}}; color: #15211C; font-size: 18px; font-weight: 800">Continue</button>
+</div>
+</sc-if>
+
+<sc-if value="{{showNav}}" hint-placeholder-val="{{ false }}">
+<nav style="height: 76px; flex-shrink: 0; background: #FFFFFF; border-top: 1px solid #DADDD3; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr))">
+  <button onClick="{{goHome}}" style="border: none; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; font-size: 14px; font-weight: 700; color: {{navBook}}">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20a6.5 6.5 0 0 1 13 0"></path><path d="M19 8v6M16 11h6"></path></svg>
+    Hire
+  </button>
+  <button onClick="{{goBookings}}" style="border: none; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; font-size: 14px; font-weight: 700; color: {{navBookings}}">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+    Bookings
+  </button>
+  <button onClick="{{goPayments}}" style="border: none; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; font-size: 14px; font-weight: 700; color: {{navPay}}">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4h10M7 9h10M7 4c6 0 6 10 0 10l8 7"></path></svg>
+    Payments
+  </button>
+</nav>
+</sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#F5B301","options":["#F5B301","#FF8A3D","#7FD1B9"]},"$preview":{"width":390,"height":844}}'>
+const SEGS = [
+  ['factory', 'Factory', [['Welder', 950], ['Fitter', 900], ['CNC Operator', 1100], ['Machine Helper', 600], ['Packer', 550], ['Electrician', 1000]]],
+  ['construction', 'Construction', [['Mason', 900], ['Mason Helper', 600], ['Carpenter', 950], ['Painter', 850], ['Bar Bender', 900], ['Plumber', 950]]],
+  ['loading', 'Loading and transport', [['Loader', 650], ['Driver', 900], ['Delivery Helper', 600], ['Forklift Operator', 1000], ['Warehouse Packer', 550], ['Warehouse Helper', 600]]],
+  ['office', 'Office and shop', [['Office Helper', 550], ['Security Guard', 700], ['Cleaner', 550], ['Shop Helper', 550], ['Pantry Staff', 550], ['Maintenance', 800]]]
+];
+const ACCT = {
+  manufacturer: { seg: 'factory', note: 'For factories and workshops. Hire skilled workers by the day.', name: 'Company name', ph: 'Bharat Steel Works', loc: 'Factory location', where: 'Bharat Steel Works' },
+  contractor: { seg: 'construction', note: 'For contractors. Hire 10 to 200 workers at a time, by site, and pay everyone in one step.', name: 'Contractor or firm name', ph: 'Your firm name', loc: 'Office location', where: 'Site' },
+  business: { seg: 'office', note: 'For shops, offices and other businesses.', name: 'Business name', ph: 'Your business name', loc: 'Business location', where: 'Your business' },
+  personal: { seg: 'construction', note: 'For individuals hiring for a personal job, such as repairs or painting. No GST needed.', name: '', ph: '', loc: '', where: 'Your home' }
+};
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { screen: 'welcome', onboarded: false, acct: 'manufacturer', idOk: false, agree: true, seg: 'factory', skill: 'Welder', count: 4, days: 5, start: '18 Nov', site: 'Site A · Rajarhat housing project', sel: {}, viewId: 'w1', booking: null, accepted: false, approved: false, ratings: {}, swap: null, absentFixed: false, issue: '', issueSent: false, payVia: 'UPI' };
+  }
+  renderVals() {
+    const st = this.state;
+    const s = st.screen;
+    const accent = this.props.accent ?? '#F5B301';
+    const fmt = (n) => Math.round(n).toLocaleString('en-IN');
+    const go = (screen) => () => this.setState({ screen });
+    const on = '#0E6B5C', off = '#6B756F';
+    const pill = (active) => ({ bg: active ? '#15211C' : 'transparent', fg: active ? '#FFFFFF' : '#15211C' });
+
+    const acct = ACCT[st.acct] || ACCT.manufacturer;
+    const bulk = st.acct === 'contractor';
+    const seg = SEGS.find((x) => x[0] === st.seg) || SEGS[0];
+    const segs = SEGS.map(([id, label, list]) => ({ label, bg: st.seg === id ? '#0E6B5C' : 'transparent', fg: st.seg === id ? '#FFFFFF' : '#15211C', pick: () => this.setState({ seg: id, skill: list[0][0] }) }));
+    const curSkill = seg[2].find((x) => x[0] === st.skill) || seg[2][0];
+    const rate = curSkill[1];
+    const skills = seg[2].map(([label, r]) => {
+      const sel = label === curSkill[0];
+      return { label, rateText: fmt(r), bg: sel ? '#15211C' : '#FFFFFF', fg: sel ? '#FFFFFF' : '#15211C', border: sel ? '#15211C' : '#DADDD3', pick: () => this.setState({ skill: label }) };
+    });
+    const dayOpts = [1, 5, 15].map((d) => ({ label: d === 1 ? '1 day' : d + ' days', ...pill(st.days === d), pick: () => this.setState({ days: d }) }));
+    const startOpts = ['17 Nov', '18 Nov', '20 Nov'].map((d) => ({ label: d, ...pill(st.start === d), pick: () => this.setState({ start: d }) }));
+    const payOpts = ['UPI', 'Net banking', 'Card'].map((p) => ({ label: p, ...pill(st.payVia === p), pick: () => this.setState({ payVia: p }) }));
+
+    const people = [
+      { id: 'w1', name: 'Mohan Das', level: 'Level 3', distance: '1.8 km', rating: '4.9', jobs: 41, showup: '98%', time: '7:55 AM', quote: 'Fast and careful. Would book again.' },
+      { id: 'w2', name: 'Salim Sheikh', level: 'Level 3', distance: '2.1 km', rating: '4.8', jobs: 32, showup: '97%', time: '7:58 AM', quote: 'Good finish, needed no supervision.' },
+      { id: 'w3', name: 'Raju Mondal', level: 'Level 2', distance: '2.4 km', rating: '4.8', jobs: 18, showup: '96%', time: '8:02 AM', quote: 'Clean work, on time.' },
+      { id: 'w4', name: 'Bapi Roy', level: 'Level 2', distance: '3.2 km', rating: '4.6', jobs: 14, showup: '94%', time: '8:01 AM', quote: 'Reliable, follows instructions well.' },
+      { id: 'w5', name: 'Sanjay Paswan', level: 'Level 2', distance: '3.9 km', rating: '4.5', jobs: 11, showup: '93%', time: '8:04 AM', quote: 'Steady worker, good attitude.' },
+      { id: 'w6', name: 'Imran Ali', level: 'Level 1', distance: '4.4 km', rating: '4.4', jobs: 6, showup: '91%', time: '8:05 AM', quote: 'New but learns quickly.' }
+    ];
+    const pool = people.map((w) => {
+      const sel = !!st.sel[w.id];
+      return {
+        ...w, initial: w.name.charAt(0),
+        border: sel ? '#0E6B5C' : '#FFFFFF',
+        selBg: sel ? '#0E6B5C' : 'transparent', selFg: sel ? '#FFFFFF' : '#15211C', selBorder: sel ? '#0E6B5C' : '#15211C',
+        selLabel: sel ? 'Selected' : 'Select', selLabelLong: sel ? 'Selected. Tap to remove' : 'Select this worker',
+        toggle: () => this.setState({ sel: { ...st.sel, [w.id]: !sel } }),
+        view: () => this.setState({ viewId: w.id, screen: 'profile' })
+      };
+    });
+    const chosen = pool.filter((w) => st.sel[w.id]);
+    const selCount = chosen.length;
+    const pv = pool.find((w) => w.id === st.viewId) || pool[0];
+
+    const n = bulk ? st.count : selCount;
+    const shifts = n * st.days;
+    const wages = shifts * rate;
+    const ins = shifts * 8;
+    const fee = wages * 0.1;
+    const total = wages + ins + fee;
+
+    const bk = st.booking || { n: 0, skill: '', days: 0, start: '', rate: 0, ids: [], total: 0, totalText: '0', where: '', bulk: false };
+    let ids = bk.ids.slice();
+    if (st.swap) ids = ids.map((id) => (id === st.swap.out ? st.swap.in : id));
+    const r3 = (active) => (active ? '#15211C' : 'transparent');
+    const f3 = (active) => (active ? '#FFFFFF' : '#15211C');
+    const setRate = (id, v) => () => this.setState({ ratings: { ...st.ratings, [id]: v } });
+    const bkWorkers = ids.map((id) => people.find((w) => w.id === id)).filter(Boolean).map((w, i, arr) => {
+      const waiting = !st.accepted && i === arr.length - 1;
+      const isNew = st.swap && st.swap.in === w.id;
+      const r = st.ratings[w.id] || 'ok';
+      const spare = people.find((p) => bk.ids.indexOf(p.id) < 0) || people[5];
+      return {
+        ...w, initial: w.name.charAt(0),
+        time: isNew ? '9:40 AM' : w.time,
+        liveNote: isNew ? 'Replacement · ' + w.level : w.level,
+        stLabel: waiting ? 'Waiting' : 'Accepted', stBg: waiting ? '#FFF4CC' : '#E3F2EE', stFg: waiting ? '#6B4E00' : '#0A5246',
+        replace: () => this.setState({ swap: { out: w.id, in: spare.id, outName: w.name } }),
+        ratePoor: setRate(w.id, 'poor'), rateOk: setRate(w.id, 'ok'), rateGreat: setRate(w.id, 'great'),
+        poorBg: r3(r === 'poor'), poorFg: f3(r === 'poor'), okBg: r3(r === 'ok'), okFg: f3(r === 'ok'), greatBg: r3(r === 'great'), greatFg: f3(r === 'great')
+      };
+    });
+    const swapIn = st.swap ? (people.find((w) => w.id === st.swap.in) || people[5]) : people[5];
+    const absent = bk.bulk && !st.absentFixed ? 2 : 0;
+    const present = bk.n - absent;
+    const dayWages = bk.n * bk.rate;
+    const released = st.approved ? dayWages : 0;
+    const dayCost = st.approved ? dayWages * 1.1 + bk.n * 8 : 0;
+    const acceptedCount = st.accepted ? bk.n : (bk.bulk ? Math.round(bk.n * 0.9) : Math.max(bk.n - 1, 0));
+
+    const issueDefs = {
+      'Unsatisfactory work': ['Choose a remedy: redo the work, replace the worker, or pay part of the wage.', 'The disputed amount stays held until support decides.', 'The rating is recorded on the worker’s Skill Passport.'],
+      'Theft or damage': ['The worker’s pending pay is held and the account is suspended.', 'You receive the worker’s verified identity for a police complaint.', 'Support helps you file a claim if a protection cover applies.'],
+      'Worker left without telling': ['The worker is marked absent and paid only for time worked.', 'A replacement is sent if you want one.', 'The worker’s show-up score is reduced.'],
+      'Misbehaviour': ['Support calls you and the worker the same day.', 'Serious cases lead to suspension from the platform.', 'You can ask for a replacement at no extra cost.']
+    };
+    const issueOpts = Object.keys(issueDefs).map((label) => ({ label, border: st.issue === label ? '#B3261E' : '#15211C', bg: st.issue === label ? '#B3261E' : '#FFFFFF', fg: st.issue === label ? '#FFFFFF' : '#15211C', pick: () => this.setState({ issue: label }) }));
+
+    const payLines = [{ title: '4–6 Nov · 2 × Fitter', sub: '6 shifts approved · paid to workers', amt: fmt(6 * 900) }];
+    if (st.booking) payLines.unshift({ title: bk.start + ' · ' + bk.n + ' × ' + bk.skill, sub: st.approved ? 'Day 1 approved · sent to ' + bk.n + ' accounts' : 'Paid in advance · held safely', amt: fmt(st.approved ? dayWages : bk.total) });
+
+    return {
+      accent, bulk, acct: st.acct, site: st.site,
+      isWelcome: s === 'welcome', isCompany: s === 'company',
+      isHome: s === 'home', isResults: s === 'results', isBulk: s === 'bulk', isProfile: s === 'profile', isConfirm: s === 'confirm', isSent: s === 'sent', isBookings: s === 'bookings', isLive: s === 'live', isReplace: s === 'replace', isIssue: s === 'issue', isRate: s === 'rate', isPayments: s === 'payments',
+      showNav: st.onboarded && s !== 'results',
+      showBar: s === 'results',
+      goCompany: go('company'),
+      pickAcct: (ev) => {
+        const v = ev && ev.target ? ev.target.value : '';
+        if (!ACCT[v]) return;
+        const sg = SEGS.find((x) => x[0] === ACCT[v].seg) || SEGS[0];
+        this.setState({ acct: v, seg: sg[0], skill: sg[2][0][0], count: v === 'contractor' ? 50 : 4, idOk: false });
+      },
+      pickSite: (ev) => { const v = ev && ev.target ? ev.target.value : ''; if (v) this.setState({ site: v }); },
+      acctNote: acct.note, nameLabel: acct.name, namePh: acct.ph, locLabel: acct.loc,
+      isBiz: st.acct !== 'personal', isPersonal: st.acct === 'personal',
+      verifyId: () => this.setState({ idOk: true }), idDone: st.idOk,
+      idDoneText: st.acct === 'personal' ? 'Aadhaar verified' : 'GST verified',
+      toggleAgree: () => this.setState({ agree: !st.agree }), agreeBg: st.agree ? '#0E6B5C' : '#FFFFFF',
+      finishOnboarding: () => this.setState({ onboarded: true, idOk: true, screen: 'home' }),
+      goHome: go('home'), goBookings: go('bookings'), goPayments: go('payments'), goLive: go('live'),
+      goReplace: () => this.setState({ screen: 'replace', swap: null }),
+      goIssue: () => this.setState({ screen: 'issue', issue: '', issueSent: false }),
+      backToResults: go(bulk ? 'bulk' : 'results'),
+      segs, skills, dayOpts, startOpts, payOpts,
+      count: st.count, days: st.days, start: st.start,
+      countHint: bulk ? 'Bulk hiring: 10 to 200' : 'Up to 6 in this demo',
+      inc: () => this.setState({ count: bulk ? Math.min(st.count + 10, 200) : Math.min(st.count + 1, 6) }),
+      dec: () => this.setState({ count: bulk ? Math.max(st.count - 10, 10) : Math.max(st.count - 1, 1) }),
+      skillLabel: curSkill[0], rateText: fmt(rate),
+      goResults: () => {
+        const sel = {};
+        people.slice(0, Math.min(st.count, 6)).forEach((w) => { sel[w.id] = true; });
+        this.setState({ sel, screen: bulk ? 'bulk' : 'results' });
+      },
+      standby: Math.max(2, Math.round(st.count * 0.1)),
+      levels: [
+        { name: 'Level 3 · most experienced', note: '30 or more verified jobs', n: Math.round(st.count * 0.2) },
+        { name: 'Level 2 · experienced', note: '10 to 29 verified jobs', n: Math.round(st.count * 0.5) },
+        { name: 'Level 1 · newer workers', note: 'Fewer than 10 verified jobs', n: st.count - Math.round(st.count * 0.2) - Math.round(st.count * 0.5) }
+      ],
+      pool, pv, selCount, n,
+      whoLine: bulk ? st.site + ' · auto-selected best matches' : chosen.map((w) => w.name).join(', '),
+      barBg: selCount > 0 ? accent : '#DADDD3',
+      goConfirm: () => { if (n > 0) this.setState({ screen: 'confirm' }); },
+      shifts, wagesText: fmt(wages), insText: fmt(ins), feeText: fmt(fee), totalText: fmt(total),
+      sendRequest: () => this.setState({
+        booking: { n, skill: curSkill[0], days: st.days, start: st.start, rate, total, totalText: fmt(total), bulk, where: bulk ? st.site : acct.where, ids: (bulk ? people.slice(0, 4) : chosen).map((w) => w.id) },
+        accepted: false, approved: false, ratings: {}, swap: null, absentFixed: false, screen: 'sent'
+      }),
+      bk, bkWorkers,
+      hasMore: bk.n > bkWorkers.length, moreCount: bk.n - bkWorkers.length,
+      sentTitle: st.accepted ? 'All ' + bk.n + ' confirmed' : acceptedCount + ' of ' + bk.n + ' accepted so far',
+      sentSub: st.accepted ? 'Each worker has accepted the work agreement by OTP and gets a reminder at 7 AM.' : 'Workers can see that payment is secured. If someone declines, the next best match is offered.',
+      notAccepted: !st.accepted, isAccepted: st.accepted,
+      allAccept: () => this.setState({ accepted: true }),
+      hasBooking: !!st.booking, noBooking: !st.booking,
+      bkStatus: !st.accepted ? 'WAITING FOR WORKERS' : (st.approved ? 'DAY 1 APPROVED AND PAID' : 'ON SITE TODAY'),
+      openBooking: () => this.setState({ screen: st.accepted ? 'live' : 'sent' }),
+      present,
+      liveBg: absent ? '#B3261E' : '#0E6B5C',
+      liveNote: absent ? absent + ' workers have not checked in' : (st.absentFixed ? 'all present · 2 replacements arrived' : 'checked in by 8:05 AM'),
+      needsBulkFix: absent > 0,
+      fixAbsent: () => this.setState({ absentFixed: true }),
+      approveLabel: bk.bulk ? 'End of day: approve all ' + bk.n : 'End of day: approve and rate',
+      goApprove: () => this.setState({ screen: 'rate' }),
+      notApproved: !st.approved, isApproved: st.approved,
+      approve: () => this.setState({ approved: true, absentFixed: true, screen: 'live' }),
+      dayWagesText: fmt(dayWages),
+      noSwap: !st.swap, hasSwap: !!st.swap, swapIn, swapOutName: st.swap ? st.swap.outName : '',
+      issueOpts, issueOpen: !st.issueSent, issueDone: st.issueSent, issuePicked: !!st.issue,
+      issueSteps: (issueDefs[st.issue] || []).map((text, i) => ({ text: (i + 1) + '. ' + text })),
+      issueLabel: st.issue,
+      sendIssue: () => this.setState({ issueSent: true }),
+      paidInText: fmt(bk.total), releasedText: fmt(released), heldText: fmt(Math.max(bk.total - dayCost, 0)),
+      payLines,
+      navBook: (s === 'home' || s === 'profile' || s === 'confirm' || s === 'bulk') ? on : off,
+      navBookings: (s === 'bookings' || s === 'sent' || s === 'live' || s === 'rate' || s === 'replace' || s === 'issue') ? on : off,
+      navPay: s === 'payments' ? on : off
+    };
+  }
+}
+</script>
+</body>
+</html>
