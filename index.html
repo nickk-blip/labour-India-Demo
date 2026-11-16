@@ -18,8 +18,34 @@ html, body { margin: 0; height: 100%; background: #15211C; }
 #stage { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; }
 #phone { width: 100%; height: 100%; background: #F3F4EF; overflow: hidden; position: relative; }
 #phone > div { width: 100% !important; height: 100% !important; }
+
+/* ---------- Tablet: side rail, wider content ---------- */
 @media (min-width: 600px) {
-  #phone { width: 390px; height: min(844px, calc(100% - 40px)); border-radius: 36px; box-shadow: 0 0 0 10px #0B120F; }
+  #phone > div { display: grid !important; grid-template-columns: auto minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto; }
+  #phone > div > [data-scroller] { grid-column: 2; grid-row: 1; min-height: 0; padding: 28px max(28px, calc((100% - 640px) / 2)) 24px !important; }
+  #phone > div > div:not([data-scroller]) { grid-column: 2; grid-row: 2; padding-left: max(28px, calc((100% - 640px) / 2)) !important; padding-right: max(28px, calc((100% - 640px) / 2)) !important; }
+  #phone > div > nav { grid-column: 1; grid-row: 1 / span 2; display: flex !important; flex-direction: column; justify-content: flex-start; gap: 6px; width: 104px; min-height: 0 !important; height: auto !important; padding: 20px 8px; border-top: none !important; border-right: 1px solid #DADDD3; box-sizing: border-box; }
+  #phone > div > nav > button { padding: 12px 4px !important; border-radius: 14px; cursor: pointer; }
+  #phone > div > nav > button:hover { background: #F3F4EF !important; }
+  #phone > div[data-screen="jobs"] > [data-scroller],
+  #phone > div[data-screen="results"] > [data-scroller] { padding-left: max(28px, calc((100% - 760px) / 2)) !important; padding-right: max(28px, calc((100% - 760px) / 2)) !important; }
+  .li-cards { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+}
+
+/* ---------- Laptop: full sidebar, brand panel on sign-up ---------- */
+@media (min-width: 1024px) {
+  #phone > div > [data-scroller] { padding: 40px max(40px, calc((100% - 760px) / 2)) 32px !important; }
+  #phone > div > div:not([data-scroller]) { padding-left: max(40px, calc((100% - 760px) / 2)) !important; padding-right: max(40px, calc((100% - 760px) / 2)) !important; }
+  #phone > div[data-screen="jobs"] > [data-scroller],
+  #phone > div[data-screen="results"] > [data-scroller] { padding-left: max(40px, calc((100% - 980px) / 2)) !important; padding-right: max(40px, calc((100% - 980px) / 2)) !important; }
+  #phone > div[data-screen="results"] > div:not([data-scroller]) { padding-left: max(40px, calc((100% - 980px) / 2)) !important; padding-right: max(40px, calc((100% - 980px) / 2)) !important; }
+  #phone > div > nav { width: 264px; padding: 28px 16px; gap: 8px; }
+  #phone > div > nav::before { content: "Labour India"; display: block; font: 800 22px/40px 'Mukta', system-ui, sans-serif; color: #15211C; padding: 0 0 0 54px; margin: 0 8px 22px; background: url(icon.svg) no-repeat left center / 40px 40px; }
+  #phone > div > nav > button { flex-direction: row !important; justify-content: flex-start !important; gap: 14px !important; font-size: 16px !important; padding: 14px 16px !important; text-align: left; }
+  #phone > div.is-onboard { grid-template-columns: minmax(340px, 38%) minmax(0, 1fr); }
+  #phone > div.is-onboard::before { content: "Labour India\A Verified workers for any job.\A Paid automatically."; white-space: pre-line; grid-column: 1; grid-row: 1 / span 2; background: #15211C url(icon.svg) no-repeat 56px 64px / 80px 80px; color: #FFFFFF; font: 800 30px/1.4 'Mukta', system-ui, sans-serif; padding: 176px 56px 56px; box-sizing: border-box; }
+  #phone > div.is-onboard > [data-scroller] { padding: 56px max(40px, calc((100% - 480px) / 2)) 32px !important; }
+  #phone > div.is-onboard > div:not([data-scroller]) { padding-left: max(40px, calc((100% - 480px) / 2)) !important; padding-right: max(40px, calc((100% - 480px) / 2)) !important; }
 }
 #loading { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font: 700 18px system-ui, sans-serif; color: #56625B; }
 #notice { position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 10; max-width: 420px; margin: 0 auto; background: #15211C; color: #FFFFFF; border: 2px solid #F5B301; border-radius: 16px; padding: 12px 14px; display: flex; gap: 12px; align-items: center; font: 600 14px/1.35 system-ui, sans-serif; }
@@ -140,6 +166,14 @@ html, body { margin: 0; height: 100%; background: #15211C; }
     });
     var root = phone.firstElementChild;
     var scroller = root && root.firstElementChild;
+    if (root) {
+      root.setAttribute('data-app', app.key);
+      root.setAttribute('data-screen', String(app.comp.state.screen || ''));
+      var hasNav = false;
+      for (var c = root.firstElementChild; c; c = c.nextElementSibling) if (c.localName === 'nav') hasNav = true;
+      root.classList.toggle('has-nav', hasNav);
+      root.classList.toggle('is-onboard', ['lang','phone','otp','skill','verify','welcome','company'].indexOf(String(app.comp.state.screen)) >= 0);
+    }
     if (scroller) { scroller.setAttribute('data-scroller', ''); scroller.scrollTop = sameScreen ? top : 0; }
     if (focusId && sameScreen) { var f = document.getElementById(focusId); if (f) f.focus(); }
     app.lastScreen = app.comp.state.screen;
@@ -167,7 +201,7 @@ html, body { margin: 0; height: 100%; background: #15211C; }
       var Comp = new Function('DCLogic', sEl.textContent + '\n;return Component;')(DCLogic);
       var comp = new Comp(props);
       comp.props = props;
-      var app = { comp: comp, tpl: tpl, inputs: {}, lastScreen: null, mounted: false };
+      var app = { key: key, comp: comp, tpl: tpl, inputs: {}, lastScreen: null, mounted: false };
       comp._update = function () { if (current === app) mount(app); };
       return app;
     });

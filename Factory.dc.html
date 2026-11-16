@@ -170,6 +170,7 @@ input,select{font-family:inherit}
       <div style="font-size: 14px; color: #56625B">Best matches are selected for you. Change if you like.</div>
     </div>
   </div>
+  <div class="li-cards" style="display: flex; flex-direction: column; gap: 12px">
   <sc-for list="{{pool}}" as="w" hint-placeholder-count="4">
     <div style="background: #FFFFFF; border-radius: 20px; padding: 14px; display: flex; flex-direction: column; gap: 10px; border: 2px solid {{w.border}}">
       <div style="display: flex; align-items: center; gap: 12px">
@@ -191,6 +192,7 @@ input,select{font-family:inherit}
       </div>
     </div>
   </sc-for>
+  </div>
 </div>
 </sc-if>
 

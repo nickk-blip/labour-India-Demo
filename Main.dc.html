@@ -270,6 +270,7 @@ input,select{font-family:inherit}
     </button>
   </sc-if>
   <div style="font-size: 17px; font-weight: 700; color: #56625B">Matching your skill ({{offerCount}})</div>
+  <div class="li-cards" style="display: flex; flex-direction: column; gap: 12px">
   <sc-for list="{{offers}}" as="j" hint-placeholder-count="3">
     <button onClick="{{j.open}}" style="border: 2px solid {{j.border}}; background: #FFFFFF; color: #15211C; border-radius: 20px; padding: 16px; text-align: left; display: flex; flex-direction: column; gap: 10px">
       <span style="display: flex; justify-content: space-between; gap: 10px; align-items: flex-start">
@@ -283,6 +284,7 @@ input,select{font-family:inherit}
       </span>
     </button>
   </sc-for>
+  </div>
   <sc-if value="{{noOffers}}" hint-placeholder-val="{{ false }}">
     <div style="background: #FFFFFF; border-radius: 20px; padding: 20px; font-size: 16px; color: #56625B; text-align: center">No new jobs right now. We will alert you when one arrives.</div>
   </sc-if>
